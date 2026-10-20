@@ -141,7 +141,7 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   <div class="group">
     <button class="action" id="sync">Sync to Google Sheet</button>
     <button class="action" id="syncLink">Change Sync Link…</button>
-    <button class="action" id="allPresent">Mark Everyone Present</button>
+    <button class="action" id="allPresent">Set Everyone: Present</button>
     <button class="action" id="exportImg">Export as Image</button>
     <button class="action" id="export">Export to Google Sheets / Excel</button>
     <button class="action danger" id="clearDay">Clear This Day</button>
@@ -152,7 +152,7 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 (function(){
-  var SYNC_URL = ""; // optional: paste your Apps Script web app link here so every visitor gets it
+  var SYNC_URL = "https://script.google.com/macros/s/AKfycbzUiIAcYWRIWZgiOTWNm_Q2T9Kn0sMVhmIObs-3lemhAc2Ikgdymric-R3eJT41t4_R/exec"; // Google Apps Script web app URL
   var ROSTER = {
     Male: [
       "ALABAN, EDMARK JOHN P.","ARAO, MARK KEN C.","AREDIDON, JHON JAYRIC N.","BALLAD, EVON JAMES T.",
@@ -200,7 +200,21 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   $("date").value = current; $("date").min = START_DATE;
   var CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3.2L13 4.5"/></svg>';
   var ALL = [];
-  Object.keys(ROSTER).forEach(function(g){ ROSTER[g].forEach(function(n){ ALL.push({group:g,name:n}); }); });
+  Object.keys(ROSTER).forEach(function(g){
+    ROSTER[g] = ROSTER[g].filter(function(n){
+      var surname = n.split(",")[0].trim().toUpperCase();
+      return surname !== "ABAYON" && surname !== "ULIT";
+    });
+    ROSTER[g].forEach(function(n){ ALL.push({group:g,name:n}); });
+  });
+  // Remove these names from saved attendance data too, if older browser data contains them.
+  Object.keys(records).forEach(function(d){
+    Object.keys(records[d] || {}).forEach(function(n){
+      var surname = n.split(",")[0].trim().toUpperCase();
+      if (surname === "ABAYON" || surname === "ULIT") delete records[d][n];
+    });
+  });
+  save();
 
   function day(){ return records[current] || (records[current] = {}); }
   function setStatus(name, st){
@@ -301,8 +315,17 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   $("today").addEventListener("click", function(){ setDate(iso(new Date())); });
   $("q").addEventListener("input", function(){ query = this.value; render(); });
 
+  var bulkStatuses = ["present", "absent", "excused", "late"];
+  var bulkLabels = {present:"Present", absent:"Absent", excused:"Excused", late:"Late"};
+  var bulkIndex = 0;
   $("allPresent").addEventListener("click", function(){
-    var d = day(); ALL.forEach(function(p){ if (!d[p.name]) d[p.name] = "present"; }); save(); render();
+    var status = bulkStatuses[bulkIndex];
+    var d = day();
+    ALL.forEach(function(p){ d[p.name] = status; });
+    save();
+    bulkIndex = (bulkIndex + 1) % bulkStatuses.length;
+    $("allPresent").textContent = "Set Everyone: " + bulkLabels[bulkStatuses[bulkIndex]];
+    render();
   });
   $("clearDay").addEventListener("click", function(){
     if (!records[current] || !Object.keys(records[current]).length) return;
