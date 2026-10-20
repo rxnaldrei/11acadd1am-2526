@@ -132,13 +132,48 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 }
 @media (max-width:480px){.pills{gap:4px}.pill{padding:5px 8px;font-size:13px}.stat b{font-size:24px}}
 @media (max-width:380px){.pill{padding:5px 6px;font-size:12px}.row{gap:10px;padding:8px 12px}.row+.row::before{left:50px}}
+
+
+/* Integrated Liquid-Glass-CSS-inspired refraction layer (local, no CDN required) */
+.liquidGlass{position:relative;isolation:isolate;overflow:hidden;}
+.liquidGlass::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);filter:url(#liquidGlassFilter2);opacity:.42;}
+.liquidGlass::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.015) 55%,rgba(255,255,255,.055));box-shadow:inset 1px 1px 2px rgba(255,255,255,.42),inset -1px -2px 3px rgba(20,20,30,.16);}
+.liquidGlass>*{position:relative;z-index:1;}
+.nav.liquidGlass::before{opacity:.28;backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%)}
+.group.liquidGlass::before{opacity:.48;backdrop-filter:blur(7px) saturate(155%);-webkit-backdrop-filter:blur(7px) saturate(155%)}
+button.liquidGlass{overflow:hidden;}
+button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
+@media(prefers-reduced-transparency:reduce){.liquidGlass::before{filter:none;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:.2}}
+
+
+/* Minimal frosted-glass finish: blur only, no refraction, shine, or glossy gradients. */
+.liquidGlass{isolation:auto!important;}
+.liquidGlass::before,.liquidGlass::after{content:none!important;display:none!important;filter:none!important;}
+.liquidGlass>*{position:static;z-index:auto;}
+.nav,.nav.liquidGlass{background:rgba(245,247,252,.60)!important;border-bottom:1px solid rgba(255,255,255,.22)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(24px)!important;backdrop-filter:blur(24px)!important;}
+.group,.group.liquidGlass{background:rgba(245,247,252,.43)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(22px)!important;backdrop-filter:blur(22px)!important;}
+.search,.search.liquidGlass{background:rgba(245,247,252,.38)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important;}
+.lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:rgba(245,247,252,.28)!important;border:1px solid rgba(255,255,255,.20)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;}
+.toast{box-shadow:none!important;-webkit-backdrop-filter:blur(22px)!important;backdrop-filter:blur(22px)!important;}
+@media(prefers-color-scheme:dark){
+ .nav,.nav.liquidGlass{background:rgba(22,24,35,.58)!important;border-bottom-color:rgba(255,255,255,.12)!important;}
+ .group,.group.liquidGlass{background:rgba(22,24,35,.48)!important;border-color:rgba(255,255,255,.12)!important;}
+ .search,.search.liquidGlass{background:rgba(22,24,35,.40)!important;border-color:rgba(255,255,255,.12)!important;}
+ .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.12)!important;}
+}
 </style>
 </head>
 <body>
-<header class="nav" id="nav">
+
+<svg aria-hidden="true" width="0" height="0" style="position:absolute;visibility:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
+<filter id="liquidGlassFilter" color-interpolation-filters="sRGB" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.011" numOctaves="2" seed="8" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence"/><feDisplacementMap in="SourceGraphic" in2="turbulence" scale="22" xChannelSelector="R" yChannelSelector="B" x="0%" y="0%" width="100%" height="100%"/></filter>
+<filter id="liquidGlassFilter2" color-interpolation-filters="linearRGB" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse"><feBlend mode="screen" in="SourceGraphic" in2="SourceGraphic" result="blend"/><feTurbulence type="fractalNoise" baseFrequency="0.019 0.008" numOctaves="3" seed="8" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence"/><feDisplacementMap in="blend" in2="turbulence" scale="3" xChannelSelector="R" yChannelSelector="B"/></filter>
+</defs></svg>
+
+<header class="nav liquidGlass blur-5" id="nav">
   <div class="wrap">
-    <div class="titlebar"><div class="title-stack"><h1>Attendance</h1><div class="subtitle">11-ACAD D-1AM <span aria-hidden="true">·</span> 2026–2027</div></div><button class="lock-btn" id="dayLock" type="button" aria-label="Lock day" title="Lock day" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></button></div>
-    <label class="search">
+    <div class="titlebar"><div class="title-stack"><h1>Attendance</h1><div class="subtitle">11-ACAD D-1AM <span aria-hidden="true">·</span> 2026–2027</div></div><button class="lock-btn liquidGlass blur-4" id="dayLock" type="button" aria-label="Lock day" title="Lock day" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></button></div>
+    <label class="search liquidGlass blur-5">
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
       <input id="q" type="search" placeholder="Search" aria-label="Search names" autocomplete="off">
     </label>
@@ -146,15 +181,15 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 </header>
 
 <main class="wrap">
-  <div class="group" style="margin-top:16px">
+  <div class="group liquidGlass blur-5" style="margin-top:16px">
     <div class="row date-row">
-      <button class="chev" id="prev" aria-label="Previous day">‹</button>
-      <div class="mid"><input type="date" id="date" aria-label="Date"><button class="today" id="today">Today</button></div>
-      <button class="chev" id="next" aria-label="Next day">›</button>
+      <button class="chev liquidGlass blur-3" id="prev" aria-label="Previous day">‹</button>
+      <div class="mid"><input type="date" id="date" aria-label="Date"><button class="today liquidGlass blur-3" id="today">Today</button></div>
+      <button class="chev liquidGlass blur-3" id="next" aria-label="Next day">›</button>
     </div>
   </div>
 
-  <div class="group stats" aria-live="polite">
+  <div class="group stats liquidGlass blur-5" aria-live="polite">
     <div class="stat p"><b id="c-present">0</b><span>Present</span></div>
     <div class="stat l"><b id="c-late">0</b><span>Late</span></div>
     <div class="stat a"><b id="c-absent">0</b><span>Absent</span></div>
@@ -166,17 +201,17 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   <div id="lists"></div>
 
   <div class="head"><span>All Days</span><span id="daysInfo"></span></div>
-  <div class="group days" id="days"></div>
+  <div class="group days liquidGlass blur-5" id="days"></div>
   <p class="foot">Every day since attendance started. Tap a day to open it.</p>
 
   <div class="head"><span>Actions</span></div>
-  <div class="group">
-    <button class="action" id="sync">Save to Google Sheets</button>
-    <button class="action" id="syncLink">Google Sheets Settings…</button>
-    <button class="action" id="allPresent">Set Everyone: Present</button>
-    <button class="action" id="exportImg">Export as Image</button>
-    <button class="action" id="export">Export to Google Sheets / Excel</button>
-    <button class="action danger" id="clearDay">Clear This Day</button>
+  <div class="group liquidGlass blur-5">
+    <button class="action liquidGlass blur-4" id="sync">Save to Google Sheets</button>
+    <button class="action liquidGlass blur-4" id="syncLink">Google Sheets Settings…</button>
+    <button class="action liquidGlass blur-4" id="allPresent">Set Everyone: Present</button>
+    <button class="action liquidGlass blur-4" id="exportImg">Export as Image</button>
+    <button class="action liquidGlass blur-4" id="export">Export to Google Sheets / Excel</button>
+    <button class="action danger liquidGlass blur-4" id="clearDay">Clear This Day</button>
   </div>
   <p class="foot">Tap the circle to mark present. Use Late or Absent for the other options. Marks are saved in this browser. Save to Google Sheets sends the selected day’s attendance to your spreadsheet.</p>
 </main>
@@ -208,6 +243,7 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   var KEY = "attendance-checklist-v1";
   var LOCK_KEY = "attendance-day-locks-v1";
   var dayLocks = {};
+  var sessionUnlocks = {}; // Temporary overrides reset on page refresh.
   try { var savedLocks = JSON.parse(localStorage.getItem(LOCK_KEY)); if (savedLocks && typeof savedLocks === "object") dayLocks = savedLocks; } catch (e) {}
   var records = {};
   try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === "object") records = s; } catch (e) {}
@@ -254,10 +290,16 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   function day(){ return records[current] || (records[current] = {}); }
   function isAutoLocked(date){
     var now = new Date(), ds = date || current;
+    // Every date is locked until that date's 12:45 PM local cutoff.
+    if (ds > iso(now)) return true;
     return ds === iso(now) && (now.getHours() > 12 || (now.getHours() === 12 && now.getMinutes() >= 45));
   }
   function isLocked(date){
     var ds = date || current, todayStr = iso(new Date());
+    // Future attendance is always locked; each day opens at 12:45 PM local time.
+    if (ds > todayStr) return true;
+    // A same-day override is intentionally memory-only and disappears on refresh.
+    if (ds === todayStr && sessionUnlocks[ds] === true) return false;
     if (isAutoLocked(ds)) return true;
     if (Object.prototype.hasOwnProperty.call(dayLocks, ds)) return dayLocks[ds] === true;
     return ds < todayStr;
@@ -272,11 +314,14 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
     b.setAttribute("aria-label", autoLocked ? "Attendance automatically locked until midnight" : (locked ? "Unlock day" : "Lock day"));
     b.setAttribute("title", autoLocked ? "Automatically locked from 12:45 PM until midnight" : (locked ? "Unlock day" : "Lock day"));
     b.setAttribute("aria-pressed", locked ? "true" : "false");
-    b.disabled = autoLocked;
+    var futureLocked = current > iso(new Date());
+    b.disabled = futureLocked;
     $("readonlyNote").hidden = !locked;
-    $("readonlyNote").textContent = autoLocked
-      ? "Attendance is automatically locked after 12:45 PM and stays read-only until midnight. It will be editable for the new day after midnight."
-      : "Read-only: attendance for " + current + " is locked. Unlock it only if you intentionally need to correct this day.";
+    $("readonlyNote").textContent = futureLocked
+      ? "Future attendance stays locked until that date. It becomes editable at 12:45 PM local time."
+      : (autoLocked && !sessionUnlocks[current]
+        ? "Attendance locks at 12:45 PM and stays locked until midnight. You may temporarily override this lock; refreshing the page locks it again."
+        : "Read-only: attendance for " + current + " is locked. Unlock it only if you intentionally need to correct this day.");
   }
   function setStatus(name, st){
     if (isLocked()) { toast("This day is locked and read-only"); return; }
@@ -382,12 +427,19 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 
   function setDate(d){ current = d; $("date").value = d; render(); }
   $("dayLock").addEventListener("click", function(){
-    if (isAutoLocked()) { toast("Today's attendance is automatically locked until midnight"); return; }
+    if (current > iso(new Date())) { toast("Future attendance is locked until that day at 12:45 PM"); return; }
     var locked = isLocked();
     var message = locked
       ? "WARNING: You are about to unlock attendance for " + current + ". This allows changes to saved attendance and could cause accidental edits. Only continue if corrections are necessary. Unlock this day?"
       : "WARNING: Lock attendance for " + current + "? You will not be able to change marks or clear this day until you confirm unlocking it.";
     if (!window.confirm(message)) return;
+    if (current === iso(new Date()) && isAutoLocked() && locked) {
+      // Temporary same-day override: never persist it, so refresh restores the lock.
+      sessionUnlocks[current] = true;
+      render();
+      toast("Lock temporarily overridden — refreshing restores the lock");
+      return;
+    }
     dayLocks[current] = !locked;
     try { localStorage.setItem(LOCK_KEY, JSON.stringify(dayLocks)); } catch (e) {}
     render();
