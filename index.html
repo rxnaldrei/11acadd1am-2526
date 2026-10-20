@@ -712,10 +712,9 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   }
 
   $("sync").addEventListener("click", function(){ syncCurrentDay(true, false); });
-  // Fetch immediately on opening, then keep changes made directly in the Sheet reflected here.
+  // Refresh from Google Sheets only when the website is first opened/reloaded.
+  // No background polling: this prevents cloud data from overwriting in-progress edits.
   pullFromGoogleSheet(false);
-  window.setInterval(function(){ pullFromGoogleSheet(false); }, 30000);
-  window.addEventListener("focus", function(){ pullFromGoogleSheet(false); });
 
   window.addEventListener("scroll", function(){ $("nav").classList.toggle("scrolled", window.scrollY > 4); }, {passive:true});
   var lastLockState = isLocked();
