@@ -615,9 +615,9 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   function setUrl(u){ try { localStorage.setItem("attendance-sync-url", u); } catch (e) {} }
   // Set the provided web app URL as the default for existing users once.
   try {
-    if (localStorage.getItem("attendance-sync-default-v2") !== "1") {
+    if (localStorage.getItem("attendance-sync-default-v3") !== "1") {
       localStorage.setItem("attendance-sync-url", SYNC_URL);
-      localStorage.setItem("attendance-sync-default-v2", "1");
+      localStorage.setItem("attendance-sync-default-v3", "1");
     }
   } catch (e) {}
   function askUrl(){
