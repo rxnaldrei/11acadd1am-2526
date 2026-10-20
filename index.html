@@ -429,6 +429,13 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   }
   function getUrl(){ try { return localStorage.getItem("attendance-sync-url") || SYNC_URL; } catch (e) { return SYNC_URL; } }
   function setUrl(u){ try { localStorage.setItem("attendance-sync-url", u); } catch (e) {} }
+  // Set the provided web app URL as the default for existing users once.
+  try {
+    if (localStorage.getItem("attendance-sync-default-v2") !== "1") {
+      localStorage.setItem("attendance-sync-url", SYNC_URL);
+      localStorage.setItem("attendance-sync-default-v2", "1");
+    }
+  } catch (e) {}
   function askUrl(){
     var u = prompt("Paste your Apps Script web app link (ends in /exec):", getUrl());
     if (u && /^https:\/\//.test(u.trim())){ setUrl(u.trim()); return u.trim(); }
