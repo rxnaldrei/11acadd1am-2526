@@ -252,22 +252,31 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   save();
 
   function day(){ return records[current] || (records[current] = {}); }
+  function isAutoLocked(date){
+    var now = new Date(), ds = date || current;
+    return ds === iso(now) && (now.getHours() > 12 || (now.getHours() === 12 && now.getMinutes() >= 45));
+  }
   function isLocked(date){
     var ds = date || current, todayStr = iso(new Date());
+    if (isAutoLocked(ds)) return true;
     if (Object.prototype.hasOwnProperty.call(dayLocks, ds)) return dayLocks[ds] === true;
     return ds < todayStr;
   }
   function updateLockUI(){
     var locked = isLocked();
+    var autoLocked = isAutoLocked();
     var b = $("dayLock");
     b.innerHTML = locked
       ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'
       : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 7.5-2"/></svg>';
-    b.setAttribute("aria-label", locked ? "Unlock day" : "Lock day");
-    b.setAttribute("title", locked ? "Unlock day" : "Lock day");
+    b.setAttribute("aria-label", autoLocked ? "Attendance automatically locked until midnight" : (locked ? "Unlock day" : "Lock day"));
+    b.setAttribute("title", autoLocked ? "Automatically locked from 12:45 PM until midnight" : (locked ? "Unlock day" : "Lock day"));
     b.setAttribute("aria-pressed", locked ? "true" : "false");
+    b.disabled = autoLocked;
     $("readonlyNote").hidden = !locked;
-    $("readonlyNote").textContent = "Read-only: attendance for " + current + " is locked. Unlock it only if you intentionally need to correct this day.";
+    $("readonlyNote").textContent = autoLocked
+      ? "Attendance is automatically locked after 12:45 PM and stays read-only until midnight. It will be editable for the new day after midnight."
+      : "Read-only: attendance for " + current + " is locked. Unlock it only if you intentionally need to correct this day.";
   }
   function setStatus(name, st){
     if (isLocked()) { toast("This day is locked and read-only"); return; }
@@ -373,6 +382,7 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 
   function setDate(d){ current = d; $("date").value = d; render(); }
   $("dayLock").addEventListener("click", function(){
+    if (isAutoLocked()) { toast("Today's attendance is automatically locked until midnight"); return; }
     var locked = isLocked();
     var message = locked
       ? "WARNING: You are about to unlock attendance for " + current + ". This allows changes to saved attendance and could cause accidental edits. Only continue if corrections are necessary. Unlock this day?"
@@ -574,6 +584,12 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   });
 
   window.addEventListener("scroll", function(){ $("nav").classList.toggle("scrolled", window.scrollY > 4); }, {passive:true});
+  var lastLockState = isLocked();
+  window.setInterval(function(){
+    var nextLockState = isLocked();
+    if (nextLockState !== lastLockState) { lastLockState = nextLockState; render(); }
+    else if (isAutoLocked()) updateLockUI();
+  }, 15000);
   render();
 })();
 </script>
