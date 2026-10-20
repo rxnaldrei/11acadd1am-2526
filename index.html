@@ -171,14 +171,14 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 
   <div class="head"><span>Actions</span></div>
   <div class="group">
-    <button class="action" id="sync">Sync to Google Sheet</button>
-    <button class="action" id="syncLink">Change Sync Link…</button>
+    <button class="action" id="sync">Save to Google Sheets</button>
+    <button class="action" id="syncLink">Google Sheets Settings…</button>
     <button class="action" id="allPresent">Set Everyone: Present</button>
     <button class="action" id="exportImg">Export as Image</button>
     <button class="action" id="export">Export to Google Sheets / Excel</button>
     <button class="action danger" id="clearDay">Clear This Day</button>
   </div>
-  <p class="foot">Tap the circle to mark present. Use Late or Absent for the other options. Marks are saved in this browser. Sync to Google Sheet sends the selected day to your sheet.</p>
+  <p class="foot">Tap the circle to mark present. Use Late or Absent for the other options. Marks are saved in this browser. Save to Google Sheets sends the selected day’s attendance to your spreadsheet.</p>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -424,77 +424,113 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
   });
 
 
-  $("exportImg").addEventListener("click", function(){
+  $("exportImg").addEventListener("click", async function(){
+    try {
     var rec = records[current] || {};
     var groups = [
-      {k:"present", t:"Present", c:"#34C759"},
-      {k:"late", t:"Late", c:"#FF9500"},
-      {k:"absent", t:"Absent", c:"#FF3B30"},
-      {k:"excused", t:"Excused", c:"#007AFF"},
-      {k:"", t:"Not marked", c:"#8E8E93"}
+      {k:"present", t:"Present", c:"#54D6BC"},
+      {k:"late", t:"Late", c:"#FFC36A"},
+      {k:"absent", t:"Absent", c:"#FF6489"},
+      {k:"excused", t:"Excused", c:"#7DA9FF"},
+      {k:"", t:"Not marked", c:"#A5AEC9"}
     ].map(function(g){
       g.names = ALL.filter(function(p){ return (rec[p.name] || "") === g.k; }).map(function(p){ return p.name; });
       return g;
     }).filter(function(g){ return g.names.length || g.k === "present" || g.k === "absent"; });
 
-    var W = 1080, PAD = 56, GAP = 24, COLW = (W - PAD*2 - GAP) / 2, ROW = 36, FONT = '-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif';
-    var H = 250;
+    var W = 1080, PAD = 56, GAP = 24, COLW = (W - PAD*2 - GAP) / 2, ROW = 38, FONT = '"SF Mono Custom",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace';
+    var H = 300;
     groups.forEach(function(g){ H += 70 + Math.max(1, Math.ceil(g.names.length / 2)) * ROW + 24; });
-    H += 40;
+    H += 46;
 
     var cv = document.createElement("canvas"), SC = 2;
     cv.width = W * SC; cv.height = H * SC;
     var x = cv.getContext("2d"); x.scale(SC, SC);
-    x.fillStyle = "#F2F2F7"; x.fillRect(0, 0, W, H);
+    /* Wait for the bundled website fonts before drawing canvas text. */
+    if (document.fonts && document.fonts.load) {
+      try {
+        await Promise.all([
+          document.fonts.load("700 48px \"SF Mono Custom\""),
+          document.fonts.load("400 20px \"SF Mono Custom\""),
+          document.fonts.load("500 23px \"SF Mono Custom\"")
+        ]);
+        await document.fonts.ready;
+      } catch (fontErr) {
+        /* If local fonts are unavailable, continue with the system monospace fallback. */
+      }
+    }
+    var bg = x.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, "#210b2d"); bg.addColorStop(.28, "#171b42"); bg.addColorStop(.62, "#101d35"); bg.addColorStop(1, "#071c2b");
+    x.fillStyle = bg; x.fillRect(0, 0, W, H);
+    function glow(cx, cy, r, color){ var gr=x.createRadialGradient(cx,cy,0,cx,cy,r); gr.addColorStop(0,color); gr.addColorStop(1,"rgba(0,0,0,0)"); x.fillStyle=gr; x.fillRect(0,0,W,H); }
+    glow(110, 80, 440, "rgba(190,43,147,.38)"); glow(920, 80, 420, "rgba(255,116,65,.23)"); glow(920, H-100, 470, "rgba(40,133,232,.29)"); glow(320, H*.68, 390, "rgba(111,57,222,.27)");
 
-    function rr(px, py, w, h, r){ x.beginPath(); x.moveTo(px+r,py); x.arcTo(px+w,py,px+w,py+h,r); x.arcTo(px+w,py+h,px,py+h,r); x.arcTo(px,py+h,px,py,r); x.arcTo(px,py,px+w,py,r); x.closePath(); }
+    function rr(px, py, w, h, r){ r=Math.max(0,Math.min(r,w/2,h/2)); x.beginPath(); if (typeof x.roundRect === "function") { x.roundRect(px,py,w,h,r); } else { x.moveTo(px+r,py); x.arcTo(px+w,py,px+w,py+h,r); x.arcTo(px+w,py+h,px,py+h,r); x.arcTo(px,py+h,px,py,r); x.arcTo(px,py,px+w,py,r); x.closePath(); } }
+    function glass(px,py,w,h,r){
+      rr(px,py,w,h,r); x.fillStyle="rgba(210,220,255,.105)"; x.fill();
+      x.save(); x.clip(); var gl=x.createLinearGradient(px,py,px+w,py+h); gl.addColorStop(0,"rgba(255,255,255,.16)"); gl.addColorStop(.45,"rgba(255,255,255,.025)"); gl.addColorStop(1,"rgba(160,195,255,.075)"); x.fillStyle=gl; x.fillRect(px,py,w,h); x.restore();
+      rr(px,py,w,h,r); x.strokeStyle="rgba(226,233,255,.34)"; x.lineWidth=1.2; x.stroke();
+      x.save(); x.beginPath(); x.moveTo(px+r,py+1); x.lineTo(px+w-r,py+1); x.strokeStyle="rgba(255,255,255,.34)"; x.lineWidth=1; x.stroke(); x.restore();
+    }
     function fit(t, w){ if (x.measureText(t).width <= w) return t; while (t.length > 1 && x.measureText(t + "…").width > w) t = t.slice(0, -1); return t + "…"; }
-
     var p = current.split("-"), dt = new Date(+p[0], +p[1]-1, +p[2]);
-    x.fillStyle = "#000"; x.textBaseline = "alphabetic";
-    x.font = "700 52px " + FONT; x.fillText("Attendance", PAD, 92);
-    x.fillStyle = "rgba(60,60,67,.6)"; x.font = "400 26px " + FONT;
-    x.fillText(dt.toLocaleDateString(undefined, {weekday:"long", year:"numeric", month:"long", day:"numeric"}), PAD, 134);
+    x.textBaseline="alphabetic";
+    glass(PAD, 36, W-PAD*2, 146, 28);
+    x.fillStyle="#F8F8FF"; x.font="700 48px " + FONT; x.fillText("Attendance", PAD+30, 99);
+    x.fillStyle="rgba(238,241,255,.78)"; x.font="400 23px " + FONT; x.fillText("11-ACAD D-1AM · 2026–2027", PAD+32, 137);
+    x.fillStyle="rgba(235,239,255,.76)"; x.font="400 20px " + FONT;
+    x.fillText(dt.toLocaleDateString(undefined, {weekday:"long", year:"numeric", month:"long", day:"numeric"}), PAD+32, 160);
+    var stats = [["Present","#54D6BC","present"],["Late","#FFC36A","late"],["Absent","#FF6489","absent"],["Excused","#7DA9FF","excused"]];
+    var sw=(W-PAD*2-64)/4, sy=198;
+    stats.forEach(function(st,i){ var sx=PAD+i*(sw+16); glass(sx,sy,sw,74,16); var n=ALL.filter(function(q){return rec[q.name]===st[2];}).length; x.fillStyle=st[1]; x.beginPath(); x.arc(sx+19,sy+25,4.5,0,Math.PI*2); x.fill(); x.fillStyle="rgba(244,246,255,.84)"; x.font="400 17px "+FONT; x.fillText(st[0],sx+31,sy+30); x.fillStyle="#FFFFFF"; x.font="700 29px "+FONT; x.fillText(String(n),sx+18,sy+60); });
 
-    var tw = (W - PAD*2 - GAP*3) / 4, stats = [["Present","#34C759","present"],["Late","#FF9500","late"],["Absent","#FF3B30","absent"],["Excused","#007AFF","excused"]];
-    stats.forEach(function(s, i){
-      var sx = PAD + i * (tw + GAP);
-      x.fillStyle = "#fff"; rr(sx, 160, tw, 70, 16); x.fill();
-      var n = ALL.filter(function(q){ return rec[q.name] === s[2]; }).length;
-      x.fillStyle = s[1]; x.font = "700 36px " + FONT; x.fillText(String(n), sx + 22, 207);
-      x.fillStyle = "rgba(60,60,67,.6)"; x.font = "400 24px " + FONT; x.fillText(s[0], sx + 22 + x.measureText(String(n)).width + 12, 207);
-    });
-
-    var y = 250;
+    var y = 294;
     groups.forEach(function(g){
       var rows = Math.max(1, Math.ceil(g.names.length / 2)), bh = rows * ROW + 24;
-      x.fillStyle = g.c; x.font = "700 30px " + FONT; x.fillText(g.t, PAD + 4, y + 44);
-      x.fillStyle = "rgba(60,60,67,.6)"; x.font = "400 26px " + FONT;
-      x.fillText(String(g.names.length), PAD + 4 + x.measureText(g.t).width * 1.12 + 30, y + 44);
-      y += 62;
-      x.fillStyle = "#fff"; rr(PAD, y, W - PAD*2, bh, 18); x.fill();
-      x.fillStyle = g.c; x.fillRect(PAD, y + 18, 5, bh - 36);
-      x.font = "400 22px " + FONT;
-      if (!g.names.length){ x.fillStyle = "rgba(60,60,67,.6)"; x.fillText("None", PAD + 28, y + 12 + 26); }
+      x.fillStyle = g.c; x.font = "700 25px " + FONT; x.fillText(g.t, PAD + 4, y + 30);
+      x.fillStyle = "rgba(234,239,255,.66)"; x.font = "400 20px " + FONT; x.fillText(String(g.names.length), PAD + 4 + x.measureText(g.t).width + 18, y + 30);
+      y += 44;
+      glass(PAD, y, W-PAD*2, bh, 19);
+      x.font = "400 20px " + FONT;
+      if (!g.names.length){ x.fillStyle = "rgba(234,239,255,.62)"; x.fillText("None", PAD + 28, y + 40); }
       g.names.forEach(function(n, i){
         var col = i % 2, row = Math.floor(i / 2);
-        var tx = PAD + 28 + col * (COLW + GAP/2), ty = y + 12 + row * ROW + 26;
-        x.fillStyle = "#000"; x.fillText(fit(n, COLW - 40), tx, ty);
+        var tx = PAD + 28 + col * (COLW + GAP/2), ty = y + 15 + row * ROW + 24;
+        x.fillStyle = "rgba(255,255,255,.92)"; x.fillText(fit(n, COLW - 42), tx, ty);
+        x.beginPath(); x.arc(tx-11,ty-6,3,0,Math.PI*2); x.fillStyle=g.c; x.fill();
       });
-      y += bh + 8;
+      y += bh + 10;
     });
+    x.fillStyle="rgba(220,230,255,.65)"; x.font="400 15px "+FONT;
+    x.fillText("11-ACAD D-1AM · 2026–2027", PAD+4, H-22);
+    x.textAlign="right"; x.fillText("Generated " + new Date().toLocaleString(), W-PAD, H-22); x.textAlign="left";
 
-    cv.toBlob(function(blob){
-      if (!blob) return;
-      var file = new File([blob], "attendance-" + current + ".png", {type:"image/png"});
-      if (navigator.canShare && navigator.canShare({files:[file]})){
-        navigator.share({files:[file], title:"Attendance " + current}).catch(function(){});
-        return;
-      }
+    var filename = "attendance-" + current + ".jpg";
+    function downloadBlob(blob){
+      if (!blob) throw new Error("The image could not be created. Please try again.");
+      var url = URL.createObjectURL(blob);
       var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob); a.download = file.name;
+      a.href = url; a.download = filename; a.style.display = "none";
       document.body.appendChild(a); a.click(); a.remove();
-    }, "image/png");
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+    }
+    var blob = await new Promise(function(resolve){
+      try { cv.toBlob(resolve, "image/jpeg", 0.88); } catch (e) { resolve(null); }
+    });
+    if (!blob && cv.toDataURL) {
+      var data = cv.toDataURL("image/jpeg", 0.88);
+      var raw = atob(data.split(",")[1]), bytes = new Uint8Array(raw.length);
+      for (var bi=0; bi<raw.length; bi++) bytes[bi] = raw.charCodeAt(bi);
+      blob = new Blob([bytes], {type:"image/jpeg"});
+    }
+    if (!blob) throw new Error("Your browser could not render the JPEG image.");
+    /* Prefer a direct download for consistent behavior across desktop and mobile browsers. */
+    downloadBlob(blob);
+    toast("Attendance JPEG exported");
+    } catch (err) {
+      console.error("Attendance image export failed:", err);
+      toast("Image export failed: " + (err && err.message ? err.message : "Please reload the page and try again."));
+    }
   });
 
 
@@ -517,24 +553,24 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
     if (u && /^https:\/\//.test(u.trim())){ setUrl(u.trim()); return u.trim(); }
     return "";
   }
-  $("syncLink").addEventListener("click", function(){ if (askUrl()) toast("Sync link saved"); });
+  $("syncLink").addEventListener("click", function(){ if (askUrl()) toast("Google Sheets link saved"); });
   $("sync").addEventListener("click", function(){
     var url = getUrl() || askUrl();
     if (!url) return;
     var rec = records[current] || {};
     var list = ALL.filter(function(p){ return rec[p.name]; }).map(function(p){ return {name:p.name, status:rec[p.name]}; });
     if (!list.length){ toast("Nothing is marked for this day yet"); return; }
-    var btn = $("sync"); btn.textContent = "Syncing…"; btn.disabled = true;
+    var btn = $("sync"); btn.textContent = "Saving…"; btn.disabled = true;
     fetch(url, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({date:current, records:list})})
       .then(function(r){ return r.json(); })
       .then(function(res){
         if (!res.ok) throw new Error(res.error || "Sync failed");
-        var m = "Synced " + res.written + " names to " + res.tab + ", column " + res.column;
+        var m = "Saved " + res.written + " names to Google Sheets: " + res.tab + ", column " + res.column;
         if (res.unmatched && res.unmatched.length) m += ". Not found in sheet: " + res.unmatched.join("; ");
         toast(m);
       })
       .catch(function(err){ toast("Could not sync. " + (err && err.message ? err.message : "Check the sync link.")); })
-      .then(function(){ btn.textContent = "Sync to Google Sheet"; btn.disabled = false; });
+      .then(function(){ btn.textContent = "Save to Google Sheets"; btn.disabled = false; });
   });
 
   window.addEventListener("scroll", function(){ $("nav").classList.toggle("scrolled", window.scrollY > 4); }, {passive:true});
