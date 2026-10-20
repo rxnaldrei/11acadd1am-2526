@@ -7,11 +7,10 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <title>Attendance — 11-ACAD D-1AM · 2026–2027</title>
 <style>
-@font-face{font-family:"SF Mono Custom";src:url("SFMono-Regular.otf") format("opentype");font-style:normal;font-weight:400;font-display:swap}
-@font-face{font-family:"SF Mono Custom";src:url("SFMono-Medium.otf") format("opentype");font-style:normal;font-weight:500;font-display:swap}
-@font-face{font-family:"SF Mono Custom";src:url("SFMono-Semibold.otf") format("opentype");font-style:normal;font-weight:600;font-display:swap}
-@font-face{font-family:"SF Mono Custom";src:url("SFMono-Bold.otf") format("opentype");font-style:normal;font-weight:700;font-display:swap}
-@font-face{font-family:"SF Mono Custom";src:url("SFMono-Heavy.otf") format("opentype");font-style:normal;font-weight:800 900;font-display:swap}
+@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Medium.otf") format("opentype");font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Bold.otf") format("opentype");font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Heavy.otf") format("opentype");font-style:normal;font-weight:800;font-display:swap}
+@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Black.otf") format("opentype");font-style:normal;font-weight:900;font-display:swap}
 :root{
   --bg:#F2F2F7; --card:#FFFFFF; --label:#000000; --label2:rgba(60,60,67,.6); --sep:rgba(60,60,67,.18);
   --fill:rgba(120,120,128,.12); --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30;
@@ -27,7 +26,8 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{background:var(--bg);min-height:100%;}
 body{margin:0;position:relative;isolation:isolate;background:transparent;color:var(--label);
-  font-family:"SF Mono Custom",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-weight:500;
   font-size:17px;line-height:1.3;-webkit-font-smoothing:antialiased}
 /* Slow, blurred aurora wallpaper behind the glass surfaces */
 body::before{content:"";position:fixed;z-index:-1;inset:-22%;pointer-events:none;background:
@@ -678,21 +678,26 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
         if (showToast) toast((payload && payload.error) || "Google Sheets read endpoint is not configured yet");
         return;
       }
+      function normalizeSheetName(name){ return String(name || "").toLowerCase().replace(/[^a-z0-9\u00f1]/g, ""); }
       var validNames = {};
-      ALL.forEach(function(person){ validNames[person.name] = true; });
+      ALL.forEach(function(person){ validNames[normalizeSheetName(person.name)] = person.name; });
       var changed = false;
       Object.keys(payload.history).forEach(function(ds){
         if (!/^\d{4}-\d{2}-\d{2}$/.test(ds)) return;
         var incoming = payload.history[ds] || {};
         var next = {};
         Object.keys(incoming).forEach(function(name){
-          if (!validNames[name]) return;
+          var canonicalName = validNames[normalizeSheetName(name)];
+          if (!canonicalName) return;
           var status = String(incoming[name] || "").trim().toLowerCase();
-          if (["present","late","absent"].indexOf(status) !== -1) next[name] = status;
+          if (["present","late","absent"].indexOf(status) !== -1) next[canonicalName] = status;
         });
         var old = records[ds] || {};
         var oldComparable = {};
-        Object.keys(old).forEach(function(name){ if (validNames[name]) oldComparable[name] = old[name]; });
+        Object.keys(old).forEach(function(name){
+          var canonicalName = validNames[normalizeSheetName(name)];
+          if (canonicalName) oldComparable[canonicalName] = old[name];
+        });
         if (JSON.stringify(oldComparable) !== JSON.stringify(next)) changed = true;
         // Spreadsheet is authoritative for dates returned by the read endpoint.
         records[ds] = next;
