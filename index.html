@@ -79,7 +79,7 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 .date-row .mid{display:flex;align-items:center;gap:4px;flex:1;justify-content:center}
 .today{color:var(--blue);font-size:17px;padding:6px 8px;border-radius:8px}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr)}
 .stat{padding:14px 8px;text-align:center}
 .stat+.stat{border-left:.5px solid var(--sep)}
 .stat b{display:block;font-size:28px;font-weight:700;letter-spacing:.36px}
@@ -93,7 +93,6 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 .s-present .check{background:var(--green);border-color:var(--green)}
 .s-present .check svg{display:block}
 .s-late .check{background:var(--orange);border-color:var(--orange)}
-.s-excused .check{background:var(--blue);border-color:var(--blue)}
 .s-absent .check{background:var(--red);border-color:var(--red)}
 .name{flex:1;min-width:0;font-size:16px;overflow-wrap:anywhere}
 .s-absent .name{color:var(--label2)}
@@ -101,7 +100,6 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 .pill{padding:5px 11px;border-radius:999px;background:var(--fill);font-size:14px;font-weight:500;color:var(--label2);transition:background .15s,color .15s}
 .pill.late[aria-pressed=true]{background:var(--orange);color:#fff}
 .pill.absent[aria-pressed=true]{background:var(--red);color:#fff}
-.pill.excused[aria-pressed=true]{background:var(--blue);color:#fff}
 .days{max-height:340px;overflow-y:scroll;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--label2) transparent}
 /* Override .group and .liquidGlass overflow:hidden so All Days can actually scroll. */
 .group.days.liquidGlass{max-height:340px;overflow-y:scroll!important;overflow-x:hidden!important;scrollbar-gutter:stable;scrollbar-width:auto;scrollbar-color:var(--label2) rgba(120,120,128,.12)}
@@ -203,7 +201,6 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     <div class="stat p"><b id="c-present">0</b><span>Present</span></div>
     <div class="stat l"><b id="c-late">0</b><span>Late</span></div>
     <div class="stat a"><b id="c-absent">0</b><span>Absent</span></div>
-    <div class="stat e"><b id="c-excused">0</b><span>Excused</span></div>
   </div>
   <p class="foot" id="unmarked"></p>
   <p class="readonly-note" id="readonlyNote" hidden></p>
@@ -293,6 +290,9 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
       if (surname === "ABAYON" || surname === "ULIT") delete records[d][n];
     });
   });
+  Object.keys(records).forEach(function(ds){
+    Object.keys(records[ds] || {}).forEach(function(name){ if (records[ds][name] === "excused") delete records[ds][name]; });
+  });
   save();
 
   function day(){ return records[current] || (records[current] = {}); }
@@ -348,15 +348,15 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     host.innerHTML = "";
     var marked = 0;
     list.forEach(function(ds){
-      var r = records[ds] || {}, c = {present:0, late:0, absent:0, excused:0}, any = false;
-      ALL.forEach(function(p){ if (r[p.name]){ c[r[p.name]]++; any = true; } });
+      var r = records[ds] || {}, c = {present:0, late:0, absent:0}, any = false;
+      ALL.forEach(function(p){ if (r[p.name] && r[p.name] !== "excused"){ c[r[p.name]]++; any = true; } });
       if (any) marked++;
       var p = ds.split("-"), dt = new Date(+p[0], +p[1]-1, +p[2]);
       var b = document.createElement("button");
       b.type = "button"; b.className = "day-row" + (ds === current ? " sel" : "");
       b.innerHTML = '<span class="dn">' + dt.toLocaleDateString(undefined,{month:"short",day:"numeric"}) +
         '<small>' + dt.toLocaleDateString(undefined,{weekday:"long",year:"numeric"}) + (ds === todayStr ? " · Today" : "") + '</small></span>' +
-        (any ? '<span class="dc"><span class="p">' + c.present + '</span><span class="l">' + c.late + '</span><span class="a">' + c.absent + '</span>' + (c.excused ? '<span class="e">' + c.excused + '</span>' : '') + '</span>'
+        (any ? '<span class="dc"><span class="p">' + c.present + '</span><span class="l">' + c.late + '</span><span class="a">' + c.absent + '</span></span>'
              : '<span class="none">Not marked</span>');
       b.addEventListener("click", function(){ setDate(ds); window.scrollTo({top:0, behavior:"smooth"}); });
       host.appendChild(b);
@@ -373,13 +373,12 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     $("allPresent").style.opacity = locked ? ".45" : "1";
     $("clearDay").style.opacity = locked ? ".45" : "1";
     var rec = records[current] || {};
-    var counts = {present:0, late:0, absent:0, excused:0};
-    ALL.forEach(function(p){ if (rec[p.name]) counts[rec[p.name]]++; });
+    var counts = {present:0, late:0, absent:0};
+    ALL.forEach(function(p){ if (rec[p.name] && counts.hasOwnProperty(rec[p.name])) counts[rec[p.name]]++; });
     $("c-present").textContent = counts.present;
     $("c-late").textContent = counts.late;
     $("c-absent").textContent = counts.absent;
-    $("c-excused").textContent = counts.excused;
-    var left = ALL.length - counts.present - counts.late - counts.absent - counts.excused;
+    var left = ALL.length - counts.present - counts.late - counts.absent;
     $("unmarked").textContent = left > 0 ? left + " of " + ALL.length + " not marked yet" : "Everyone is marked";
 
     var host = $("lists"); host.innerHTML = "";
@@ -404,17 +403,17 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
         c.disabled = locked;
         c.style.opacity = locked ? ".45" : "1";
         c.setAttribute("aria-pressed", st === "present" ? "true" : "false");
-        c.innerHTML = CHECK + (st === "late" ? "L" : st === "absent" ? "A" : st === "excused" ? "E" : "");
+        c.innerHTML = CHECK + (st === "late" ? "L" : st === "absent" ? "A" : "");
         // tap circle: unmarked -> present, any marked -> clear
         c.onclick = function(){ if (isLocked()) return; var d = day(); if (d[n]) delete d[n]; else d[n] = "present"; save(); render(); };
 
         var nm = document.createElement("span"); nm.className = "name"; nm.textContent = n;
 
         var pills = document.createElement("div"); pills.className = "pills";
-        ["late","absent","excused"].forEach(function(k){
+        ["late","absent"].forEach(function(k){
           var b = document.createElement("button");
           b.type = "button"; b.className = "pill " + k;
-          b.textContent = k === "late" ? "Late" : k === "absent" ? "Absent" : "Excused";
+          b.textContent = k === "late" ? "Late" : "Absent";
           b.setAttribute("aria-pressed", st === k ? "true" : "false");
           b.disabled = locked;
           if (locked) b.style.opacity = ".45";
@@ -451,8 +450,8 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   $("today").addEventListener("click", function(){ setDate(iso(new Date())); });
   $("q").addEventListener("input", function(){ query = this.value; render(); });
 
-  var bulkStatuses = ["present", "absent", "excused", "late"];
-  var bulkLabels = {present:"Present", absent:"Absent", excused:"Excused", late:"Late"};
+  var bulkStatuses = ["present", "absent", "late"];
+  var bulkLabels = {present:"Present", absent:"Absent", late:"Late"};
   var bulkIndex = 0;
   $("allPresent").addEventListener("click", function(){
     if (isLocked()) { toast("This day is locked and read-only"); return; }
@@ -477,15 +476,15 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     var dates = Object.keys(records).filter(function(d){
       return d.slice(0,7) === monthKey && records[d] && Object.keys(records[d]).some(function(n){ return records[d][n]; });
     }).sort();
-    var rows = [["Student Name"].concat(dates.map(function(d){ return String(Number(d.slice(8,10))); }), ["PRESENT","LATE","ABSENT","EXCUSED"])];
+    var rows = [["Student Name"].concat(dates.map(function(d){ return String(Number(d.slice(8,10))); }), ["PRESENT","LATE","ABSENT"])];
     ALL.forEach(function(p){
-      var counts = {present:0, late:0, absent:0, excused:0};
+      var counts = {present:0, late:0, absent:0};
       var statuses = dates.map(function(d){
         var st = (records[d] || {})[p.name] || "";
         if (counts.hasOwnProperty(st)) counts[st]++;
         return st ? st.toUpperCase() : "";
       });
-      rows.push([p.name].concat(statuses, [counts.present, counts.late, counts.absent, counts.excused]));
+      rows.push([p.name].concat(statuses, [counts.present, counts.late, counts.absent]));
     });
     var csv = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(","); }).join("\r\n");
     var a = document.createElement("a");
@@ -503,7 +502,6 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
       {k:"present", t:"Present", c:"#54D6BC"},
       {k:"late", t:"Late", c:"#FFC36A"},
       {k:"absent", t:"Absent", c:"#FF6489"},
-      {k:"excused", t:"Excused", c:"#7DA9FF"},
       {k:"", t:"Not marked", c:"#A5AEC9"}
     ].map(function(g){
       g.names = ALL.filter(function(p){ return (rec[p.name] || "") === g.k; }).map(function(p){ return p.name; });
@@ -552,8 +550,8 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     x.fillStyle="rgba(238,241,255,.78)"; x.font="400 23px " + FONT; x.fillText("11-ACAD D-1AM · 2026–2027", PAD+32, 137);
     x.fillStyle="rgba(235,239,255,.76)"; x.font="400 20px " + FONT;
     x.fillText(dt.toLocaleDateString(undefined, {weekday:"long", year:"numeric", month:"long", day:"numeric"}), PAD+32, 160);
-    var stats = [["Present","#54D6BC","present"],["Late","#FFC36A","late"],["Absent","#FF6489","absent"],["Excused","#7DA9FF","excused"]];
-    var sw=(W-PAD*2-64)/4, sy=198;
+    var stats = [["Present","#54D6BC","present"],["Late","#FFC36A","late"],["Absent","#FF6489","absent"]];
+    var sw=(W-PAD*2-48)/3, sy=198;
     stats.forEach(function(st,i){ var sx=PAD+i*(sw+16); glass(sx,sy,sw,74,16); var n=ALL.filter(function(q){return rec[q.name]===st[2];}).length; x.fillStyle=st[1]; x.beginPath(); x.arc(sx+19,sy+25,4.5,0,Math.PI*2); x.fill(); x.fillStyle="rgba(244,246,255,.84)"; x.font="400 17px "+FONT; x.fillText(st[0],sx+31,sy+30); x.fillStyle="#FFFFFF"; x.font="700 29px "+FONT; x.fillText(String(n),sx+18,sy+60); });
 
     var y = 294;
@@ -690,7 +688,7 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
         Object.keys(incoming).forEach(function(name){
           if (!validNames[name]) return;
           var status = String(incoming[name] || "").trim().toLowerCase();
-          if (["present","late","absent","excused"].indexOf(status) !== -1) next[name] = status;
+          if (["present","late","absent"].indexOf(status) !== -1) next[name] = status;
         });
         var old = records[ds] || {};
         var oldComparable = {};
