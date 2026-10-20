@@ -219,7 +219,7 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     <button class="action liquidGlass blur-4" id="export">Export to File</button>
     <button class="action danger liquidGlass blur-4" id="clearDay">Clear This Day</button>
   </div>
-  <p class="foot">Attendance loads from Google Sheets when the website opens and refreshes every 30 seconds. Website changes can still be saved to the sheet with the button below.</p>
+  <p class="foot">Attendance loads from Google Sheets when the website opens or is refreshed. Website changes can be saved to the sheet with the button below.</p>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -249,7 +249,7 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   var KEY = "attendance-checklist-v1";
   var LOCK_KEY = "attendance-day-locks-v1";
   var dayLocks = {};
-  try { var savedLocks = JSON.parse(localStorage.getItem(LOCK_KEY)); if (savedLocks && typeof savedLocks === "object") dayLocks = savedLocks; } catch (e) {}
+  try { dayLocks = JSON.parse(localStorage.getItem(LOCK_KEY)) || {}; } catch (e) { dayLocks = {}; }
   var records = {};
   try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === "object") records = s; } catch (e) {}
   function seedHistory(){
@@ -298,18 +298,18 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   function day(){ return records[current] || (records[current] = {}); }
   function isAutoLocked(date){
     var now = new Date(), ds = date || current, todayStr = iso(now);
-    // Past dates stay locked by default. Each date unlocks at midnight when it becomes today,
-    // then locks permanently by default at 12:45 PM local time.
-    return ds < todayStr || (ds === todayStr && (now.getHours() > 12 || (now.getHours() === 12 && now.getMinutes() >= 45)));
+    // Only today's date is editable, from 12:00 AM until 12:44:59 PM local time.
+    // Every past and future date is always locked; today locks at 12:45 PM.
+    return ds !== todayStr || now.getHours() > 12 || (now.getHours() === 12 && now.getMinutes() >= 45);
   }
   function isLocked(date){
-    var ds = date || current, todayStr = iso(new Date());
-    // Future dates stay locked until midnight at the start of that date.
-    // Once the date becomes today, it is editable until 12:45 PM unless manually overridden.
-    if (ds > todayStr) return true;
-    // An explicit user choice overrides the default lock, just as for previous days.
-    if (Object.prototype.hasOwnProperty.call(dayLocks, ds)) return dayLocks[ds] === true;
+    var ds = date || current;
+    // The schedule determines the default, but the lock button can override it.
+    if (Object.prototype.hasOwnProperty.call(dayLocks, ds)) return dayLocks[ds] !== false;
     return isAutoLocked(ds);
+  }
+  function saveLocks(){
+    try { localStorage.setItem(LOCK_KEY, JSON.stringify(dayLocks)); } catch (e) {}
   }
   function updateLockUI(){
     var locked = isLocked();
@@ -321,14 +321,22 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     b.setAttribute("aria-label", locked ? "Unlock day" : "Lock day");
     b.setAttribute("title", locked ? "Unlock day" : "Lock day");
     b.setAttribute("aria-pressed", locked ? "true" : "false");
-    var futureLocked = current > iso(new Date());
-    b.disabled = futureLocked;
+    b.disabled = false;
+    b.setAttribute("aria-label", locked ? "Unlock day" : "Lock day");
+    b.setAttribute("title", locked ? "Manually unlock this day" : "Manually lock this day");
+    var isOverride = Object.prototype.hasOwnProperty.call(dayLocks, current);
     $("readonlyNote").hidden = !locked;
-    $("readonlyNote").textContent = futureLocked
-      ? "Future attendance stays locked until 12:00 AM on that date. It unlocks at midnight and locks again at 12:45 PM local time."
-      : (autoLocked && !Object.prototype.hasOwnProperty.call(dayLocks, current)
-        ? "Attendance locks at 12:45 PM and remains locked permanently by default. You can override the lock after confirmation, just like previous days."
-        : "Read-only: attendance for " + current + " is locked. Unlock it only if you intentionally need to correct this day.");
+    $("readonlyNote").textContent = locked
+      ? (isOverride && dayLocks[current] !== false
+          ? "This day is manually locked. Use the lock button to unlock it."
+          : (current < iso(new Date())
+              ? "This is a previous day and is locked by default. Use the lock button to unlock it if needed."
+              : (current > iso(new Date())
+                  ? "This is a future day and is locked by default. Use the lock button to unlock it if needed."
+                  : "Today's attendance is locked after 12:45 PM by default. Use the lock button to unlock it if needed.")))
+      : (isOverride && dayLocks[current] === false
+          ? "This day is manually unlocked, overriding the automatic schedule."
+          : "Only today is normally editable from 12:00 AM until 12:45 PM local time.");
   }
   function setStatus(name, st){
     if (isLocked()) { toast("This day is locked and read-only"); return; }
@@ -433,16 +441,14 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
 
   function setDate(d){ current = d; $("date").value = d; render(); }
   $("dayLock").addEventListener("click", function(){
-    if (current > iso(new Date())) { toast("Future attendance is locked until that day reaches 12:45 PM"); return; }
-    var locked = isLocked();
-    var message = locked
-      ? "WARNING: You are about to unlock attendance for " + current + ". This allows changes to saved attendance and could cause accidental edits. Only continue if corrections are necessary. Unlock this day?"
-      : "WARNING: Lock attendance for " + current + "? You will not be able to change marks or clear this day until you confirm unlocking it.";
-    if (!window.confirm(message)) return;
-    dayLocks[current] = !locked;
-    try { localStorage.setItem(LOCK_KEY, JSON.stringify(dayLocks)); } catch (e) {}
+    var ds = current;
+    var wasLocked = isLocked(ds);
+    // Store explicit per-day override: false = unlocked, true = locked.
+    dayLocks[ds] = !wasLocked;
+    saveLocks();
+    updateLockUI();
     render();
-    toast(dayLocks[current] ? "Day locked — read-only" : "Day unlocked — editing enabled");
+    toast(wasLocked ? "Day manually unlocked" : "Day manually locked");
   });
   $("date").addEventListener("change", function(){ if (this.value) setDate(this.value); });
   $("prev").addEventListener("click", function(){ setDate(shiftWeekday(current,-1)); });
