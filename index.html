@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>11 ACAD D1 - Home</title>
 <meta name="description" content="Quick access portal for attendance, cleaners, and noise logs.">
+<link rel="icon" type="image/jpeg" href="/icon.jpeg">
 
 <style>
   /* Apple-inspired SF Pro Text typography. Keep Commuters Sans for the class label. */
@@ -191,7 +192,8 @@
     font-weight: 400;
     color: var(--text-secondary);
     margin: 0;
-    max-width: 480px;
+    max-width: none;
+    white-space: nowrap;
   }
 
   .grid {
@@ -368,11 +370,10 @@
     body { padding-left: 20px; padding-right: 20px; }
     h1 { letter-spacing: -0.04em; }
     .subtitle {
-      max-width: none;
-      width: max-content;
+      width: auto;
       max-width: calc(100vw - 40px);
-      white-space: nowrap;
-      font-size: clamp(10px, calc((100vw - 40px) / 28), 18px);
+      white-space: normal;
+      font-size: clamp(15px, 4vw, 16px);
       letter-spacing: -0.025em;
     }
   }
