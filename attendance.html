@@ -29,17 +29,25 @@ body{margin:0;position:relative;isolation:isolate;background:transparent;color:v
   font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   font-weight:500;
   font-size:17px;line-height:1.3;-webkit-font-smoothing:antialiased}
-/* Slow, blurred aurora wallpaper behind the glass surfaces */
-body::before{content:"";position:fixed;z-index:-1;inset:-22%;pointer-events:none;background:
+/* Blurred aurora confined to the top of the viewport, fading into a dark base beneath it */
+html{background:#05060a}
+body::before{content:"";position:fixed;z-index:-2;inset:0;pointer-events:none;background:#05060a}
+body::after{content:"";position:fixed;z-index:-1;left:-22%;right:-22%;top:-22%;height:85vh;pointer-events:none;background:
   radial-gradient(ellipse at 15% 16%,rgba(111,20,63,.78) 0%,rgba(111,20,63,0) 42%),
   radial-gradient(ellipse at 79% 18%,rgba(112,65,31,.72) 0%,rgba(112,65,31,0) 39%),
   radial-gradient(ellipse at 18% 78%,rgba(43,23,112,.88) 0%,rgba(43,23,112,0) 43%),
   radial-gradient(ellipse at 78% 78%,rgba(12,49,72,.82) 0%,rgba(12,49,72,0) 42%),
   radial-gradient(ellipse at 49% 45%,rgba(63,22,64,.38) 0%,rgba(63,22,64,0) 45%),
   linear-gradient(145deg,#21101d 0%,#151022 48%,#081722 100%);
-  background-size:145% 145%;filter:blur(62px) saturate(125%);opacity:.96;transform:translate3d(0,0,0);animation:auroraDrift 22s ease-in-out infinite alternate}
+  background-size:145% 145%;filter:blur(62px) saturate(125%);opacity:.96;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 92%);
+  mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 92%);
+  transform:translate3d(0,0,0);will-change:transform;animation:auroraDrift 22s ease-in-out infinite alternate}
 @keyframes auroraDrift{0%{background-position:0% 10%;transform:translate3d(-2%,1%,0) scale(1)}35%{background-position:85% 15%;transform:translate3d(2%,-1%,0) scale(1.08)}70%{background-position:40% 95%;transform:translate3d(-1%,2%,0) scale(1.03)}100%{background-position:100% 60%;transform:translate3d(2%,0,0) scale(1.1)}}
-@media (prefers-reduced-motion:reduce){body::before{animation:none}}
+@media (prefers-reduced-motion:reduce){body::after{animation:none}}
+@media (max-width:700px){
+  body::after{animation:none;filter:blur(40px) saturate(125%)}
+}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 55%,transparent);outline-offset:2px}
@@ -76,7 +84,7 @@ main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
 
 .row{display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 16px;position:relative}
 .row+.row::before{content:"";position:absolute;top:0;left:56px;right:0;height:.5px;background:var(--sep)}
-.date-row{justify-content:space-between}
+.date-row{justify-content:center}
 .date-row input{background:rgba(120,120,128,.10);border:1px solid rgba(255,255,255,.48);border-radius:11px;padding:6px 10px;font-size:17px;min-width:0}
 .chev{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--blue);font-size:22px;line-height:1}
 .chev:active{background:var(--fill)}
@@ -173,6 +181,25 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
  .search,.search.liquidGlass{background:rgba(22,24,35,.40)!important;border-color:rgba(255,255,255,.12)!important;}
  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.12)!important;}
 }
+
+/* Mobile perf: many stacked backdrop-filter layers are costly to composite/repaint on phones.
+   Keep blur only on the sticky nav (the one surface that needs to read over moving content);
+   everything else gets a solid-enough background instead, which is nearly free to render. */
+@media (max-width:700px){
+  .group,.group.liquidGlass,.search,.search.liquidGlass,
+  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass,
+  .toast{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}
+  .group,.group.liquidGlass{background:#1c1d24!important;border-color:rgba(255,255,255,.10)!important;}
+  .search,.search.liquidGlass{background:#23242c!important;border-color:rgba(255,255,255,.10)!important;}
+  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:#2a2b34!important;border-color:rgba(255,255,255,.10)!important;}
+  .toast{background:#23242c!important;}
+}
+@media (max-width:700px) and (prefers-color-scheme:light){
+  .group,.group.liquidGlass{background:#eef0f5!important;border-color:rgba(0,0,0,.06)!important;}
+  .search,.search.liquidGlass{background:#e6e9ef!important;border-color:rgba(0,0,0,.06)!important;}
+  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:#e2e5ec!important;border-color:rgba(0,0,0,.06)!important;}
+  .toast{background:#e6e9ef!important;}
+}
 </style>
 </head>
 <body>
@@ -195,11 +222,20 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
 <main class="wrap">
   <div class="group liquidGlass blur-5" style="margin-top:16px">
     <div class="row date-row">
-      <button class="chev liquidGlass blur-3" id="prev" aria-label="Previous day">‹</button>
       <div class="mid"><input type="date" id="date" aria-label="Date"><button class="today liquidGlass blur-3" id="today">Today</button></div>
-      <button class="chev liquidGlass blur-3" id="next" aria-label="Next day">›</button>
     </div>
   </div>
+
+  <div class="head" style="margin-top:14px"><span>Actions</span></div>
+  <div class="group liquidGlass blur-5">
+    <button class="action liquidGlass blur-4" id="sync">Save to Google Sheets</button>
+    <button class="action liquidGlass blur-4" id="pull">Sync from Google Sheets</button>
+    <button class="action liquidGlass blur-4" id="allPresent">Set Everyone: Present</button>
+    <button class="action liquidGlass blur-4" id="exportImg">Export as Image</button>
+    <button class="action liquidGlass blur-4" id="export">Export to File</button>
+    <button class="action danger liquidGlass blur-4" id="clearDay">Clear This Day</button>
+  </div>
+  <p class="foot" style="margin-bottom:20px">Attendance loads from Google Sheets when the website opens or is refreshed. Website changes can be saved to the sheet with the button below.</p>
 
   <div class="thursday-notice liquidGlass blur-4" id="thursdayNotice" role="status" aria-live="polite" hidden>
     <span class="notice-icon" aria-hidden="true">ⓘ</span>
@@ -219,16 +255,6 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   <div class="head"><span>All Days</span><span id="daysInfo"></span></div>
   <div class="group days liquidGlass blur-5" id="days"></div>
   <p class="foot">Every day since attendance started. Tap a day to open it.</p>
-
-  <div class="head"><span>Actions</span></div>
-  <div class="group liquidGlass blur-5">
-    <button class="action liquidGlass blur-4" id="sync">Save to Google Sheets</button>
-    <button class="action liquidGlass blur-4" id="allPresent">Set Everyone: Present</button>
-    <button class="action liquidGlass blur-4" id="exportImg">Export as Image</button>
-    <button class="action liquidGlass blur-4" id="export">Export to File</button>
-    <button class="action danger liquidGlass blur-4" id="clearDay">Clear This Day</button>
-  </div>
-  <p class="foot">Attendance loads from Google Sheets when the website opens or is refreshed. Website changes can be saved to the sheet with the button below.</p>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -464,8 +490,6 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     toast(wasLocked ? "Day manually unlocked" : "Day manually locked");
   });
   $("date").addEventListener("change", function(){ if (this.value) setDate(this.value); });
-  $("prev").addEventListener("click", function(){ setDate(shiftWeekday(current,-1)); });
-  $("next").addEventListener("click", function(){ setDate(shiftWeekday(current,1)); });
   $("today").addEventListener("click", function(){ setDate(iso(new Date())); });
   $("q").addEventListener("input", function(){ query = this.value; render(); });
 
@@ -676,11 +700,13 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
 
   // Pull the spreadsheet as the source of truth. JSONP avoids browser CORS issues with Apps Script.
   var cloudPullInProgress = false;
-  function pullFromGoogleSheet(showToast){
+  function pullFromGoogleSheet(showToast, requireUrlPrompt){
     if (cloudPullInProgress) return;
-    var base = getUrl();
+    var base = getUrl() || (requireUrlPrompt ? askUrl() : "");
     if (!base) return;
     cloudPullInProgress = true;
+    var btn = $("pull");
+    if (btn) { btn.textContent = "Syncing…"; btn.disabled = true; }
     var callbackName = "__attendanceSheetRead_" + Date.now() + "_" + Math.floor(Math.random()*100000);
     var script = document.createElement("script");
     var finished = false;
@@ -692,6 +718,7 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
       try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
       if (script.parentNode) script.parentNode.removeChild(script);
       cloudPullInProgress = false;
+      if (btn) { btn.textContent = "Sync from Google Sheets"; btn.disabled = false; }
       if (err) { if (showToast) toast("Could not load Google Sheets: " + err.message); return; }
       if (!payload || payload.ok !== true || !payload.history || typeof payload.history !== "object") {
         if (showToast) toast((payload && payload.error) || "Google Sheets read endpoint is not configured yet");
@@ -731,6 +758,7 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   }
 
   $("sync").addEventListener("click", function(){ syncCurrentDay(true, false); });
+  $("pull").addEventListener("click", function(){ pullFromGoogleSheet(true, true); });
   // Refresh from Google Sheets only when the website is first opened/reloaded.
   // No background polling: this prevents cloud data from overwriting in-progress edits.
   pullFromGoogleSheet(false);
