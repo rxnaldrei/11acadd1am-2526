@@ -417,6 +417,10 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     var locked = isLocked();
     $("allPresent").disabled = locked;
     $("clearDay").disabled = locked;
+    $("sync").disabled = locked;
+    $("pull").disabled = locked;
+    $("sync").style.opacity = locked ? ".45" : "1";
+    $("pull").style.opacity = locked ? ".45" : "1";
     $("allPresent").style.opacity = locked ? ".45" : "1";
     $("clearDay").style.opacity = locked ? ".45" : "1";
     var rec = records[current] || {};
@@ -667,6 +671,7 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     return "";
   }
   function syncCurrentDay(requireConfirmation, isAutomatic){
+    if (isLocked()) { if (!isAutomatic) toast("This day is locked and read-only"); return; }
     var rec = records[current] || {};
     var list = ALL.filter(function(p){ return rec[p.name]; }).map(function(p){ return {name:p.name, status:rec[p.name]}; });
     if (!list.length){
@@ -757,8 +762,8 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     document.head.appendChild(script);
   }
 
-  $("sync").addEventListener("click", function(){ syncCurrentDay(true, false); });
-  $("pull").addEventListener("click", function(){ pullFromGoogleSheet(true, true); });
+  $("sync").addEventListener("click", function(){ if (isLocked()) { toast("This day is locked and read-only"); return; } syncCurrentDay(true, false); });
+  $("pull").addEventListener("click", function(){ if (isLocked()) { toast("This day is locked and read-only"); return; } pullFromGoogleSheet(true, true); });
   // Refresh from Google Sheets only when the website is first opened/reloaded.
   // No background polling: this prevents cloud data from overwriting in-progress edits.
   pullFromGoogleSheet(false);
