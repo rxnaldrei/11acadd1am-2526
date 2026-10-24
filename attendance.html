@@ -236,26 +236,97 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
 <body>
 <style>
 #protected-app{display:none}
-#password-gate{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px;background:#05060a;color:#fff;font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;isolation:isolate;overflow:hidden;contain:paint}
+#password-gate{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px;background:#05060a;color:#fff;font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;isolation:isolate;overflow:hidden;contain:paint;opacity:1;transform:translateZ(0);transition:opacity .38s ease,transform .38s ease;}
+#password-gate.is-unlocking{opacity:0;transform:scale(1.018);pointer-events:none}
+#password-gate::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:rgba(10,4,9,0);transition:background .45s ease}
+#password-gate.has-error::after{background:rgba(12,3,8,.62)}
 /* One CSS-only animated color field: no timers, canvas, or per-frame JavaScript. */
-#password-gate::before{content:"";position:absolute;inset:-28%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 18% 28%,rgba(0,122,255,.42),transparent 36%),radial-gradient(ellipse at 78% 22%,rgba(88,86,214,.34),transparent 38%),radial-gradient(ellipse at 70% 82%,rgba(0,190,255,.22),transparent 35%),radial-gradient(ellipse at 24% 78%,rgba(145,70,255,.20),transparent 38%);filter:blur(28px);opacity:.95;transform:translate3d(-2%,0,0) scale(1);will-change:transform;animation:gateColorDrift 22s ease-in-out infinite alternate}
-@keyframes gateColorDrift{0%{transform:translate3d(-2%,1%,0) scale(1)}50%{transform:translate3d(2%,-1%,0) scale(1.04)}100%{transform:translate3d(-1%,2%,0) scale(1.01)}}
+#password-gate::before{content:"";position:absolute;inset:-28%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 18% 28%,rgba(0,122,255,.42),transparent 36%),radial-gradient(ellipse at 78% 22%,rgba(88,86,214,.34),transparent 38%),radial-gradient(ellipse at 70% 82%,rgba(0,190,255,.22),transparent 35%),radial-gradient(ellipse at 24% 78%,rgba(145,70,255,.20),transparent 38%);filter:blur(24px);opacity:.95;transform:translate3d(-2%,0,0) scale(1);animation:gateColorDrift 30s ease-in-out infinite alternate;backface-visibility:hidden;transition:background .45s ease}
+@keyframes gateColorDrift{0%{transform:translate3d(-1%,0,0) scale(1)}100%{transform:translate3d(1%,1%,0) scale(1.025)}}
+#password-gate.has-error::before{background:radial-gradient(ellipse at 18% 28%,rgba(180,24,38,.30),transparent 36%),radial-gradient(ellipse at 78% 22%,rgba(125,18,30,.25),transparent 38%),radial-gradient(ellipse at 70% 82%,rgba(150,15,38,.22),transparent 35%),radial-gradient(ellipse at 24% 78%,rgba(195,38,45,.18),transparent 38%)}
 #password-gate .gate-card{position:relative;z-index:1}
-@media(max-width:600px){#password-gate{padding:18px}#password-gate::before{inset:-18%;filter:blur(18px);animation-duration:30s}#password-gate .gate-card{backdrop-filter:saturate(135%) blur(16px);-webkit-backdrop-filter:saturate(135%) blur(16px)}}
-@media(prefers-reduced-motion:reduce){#password-gate::before{animation:none;transform:none;will-change:auto}}
-#password-gate .gate-card{width:min(100%,420px);padding:28px;border:1px solid rgba(255,255,255,.22);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.055));backdrop-filter:saturate(180%) blur(28px);-webkit-backdrop-filter:saturate(180%) blur(28px);box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 24px 70px rgba(0,0,0,.3)}
-#password-gate .gate-mark{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);margin-bottom:22px;color:var(--blue)}
-#password-gate h2{font-size:clamp(27px,6vw,34px);font-weight:700;letter-spacing:-.8px;line-height:1.12;margin:0 0 7px;color:#fff}
-#password-gate .gate-subtitle{font-size:13px;letter-spacing:.3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin:0 0 24px}
-#password-gate p{font-size:15px;line-height:1.5;color:rgba(255,255,255,.68);margin:0 0 22px}
-#password-gate input{display:block;width:100%;box-sizing:border-box;padding:14px 15px;border:1px solid rgba(255,255,255,.16);border-radius:14px;background:rgba(0,0,0,.25);color:#fff;font:inherit;outline:none;transition:border-color .18s,background .18s}
+@media(prefers-reduced-motion:reduce){#password-gate,#password-gate::before,#password-gate::after{animation:none!important;transition:none!important;transform:none!important}}
+#password-gate .gate-card{width:min(100%,420px);padding:32px;border:1px solid rgba(255,255,255,.22);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.055));backdrop-filter:saturate(180%) blur(28px);-webkit-backdrop-filter:saturate(180%) blur(28px);box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 24px 70px rgba(0,0,0,.3)}
+#password-gate .gate-mark{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);margin-bottom:24px;color:var(--blue)}
+#password-gate h2{font-size:clamp(27px,6vw,34px);font-weight:700;letter-spacing:-.8px;line-height:1.12;margin:0 0 8px;color:#fff}
+#password-gate .gate-subtitle{font-size:13px;letter-spacing:.3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin:0 0 20px}
+#password-gate p{font-size:15px;line-height:1.5;color:rgba(255,255,255,.68);margin:0 0 20px}
+#password-gate input{display:block;width:100%;box-sizing:border-box;padding:15px 16px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(0,0,0,.25);color:#fff;font:inherit;outline:none;transition:border-color .18s,background .18s}
 #password-gate input::placeholder{color:rgba(255,255,255,.42)}
 #password-gate input:focus{border-color:var(--blue);background:rgba(0,0,0,.34);box-shadow:0 0 0 3px rgba(0,122,255,.16)}
-#password-gate button{width:100%;margin-top:12px;padding:14px;border:1px solid rgba(255,255,255,.16);border-radius:14px;background:var(--blue);color:#fff;font:600 16px "SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;transition:filter .15s,transform .15s}
+#password-gate button{width:100%;margin-top:16px;padding:15px 18px;border:1px solid transparent;border-radius:999px;background:var(--blue);color:#fff;font:600 16px "SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;transition:background .16s,filter .15s,transform .15s;will-change:transform}
 #password-gate button:hover{filter:brightness(1.08)}
-#password-gate button:active{transform:scale(.99)}
+#password-gate button:active{transform:scale(.98)}
+#password-gate button.is-error{background:#FF3B30;border-color:#FF3B30;animation:loginWiggle .42s ease-in-out}
+@keyframes loginWiggle{0%,100%{transform:translateX(0)}15%,45%,75%{transform:translateX(-6px)}30%,60%,90%{transform:translateX(6px)}}
+@media(prefers-reduced-motion:reduce){#password-gate button.is-error{animation:none}}
 #password-gate .gate-error{min-height:20px;margin:10px 0 0;color:var(--red);font-size:13px}
 @media(prefers-color-scheme:light){#password-gate{background:#05060a;color:#fff}#password-gate .gate-card{border-color:rgba(255,255,255,.22)}}
+
+/* Responsive login card: fluid sizing, balanced bottom spacing, same visual system at every width. */
+#password-gate {
+  padding: clamp(14px, 3.5vw, 24px);
+}
+#password-gate .gate-card {
+  width: min(100%, 420px);
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: clamp(22px, 4.5vw, 32px);
+  border-radius: clamp(20px, 3vw, 24px);
+  background: rgba(24, 26, 38, 0.58);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 24px 70px rgba(0,0,0,0.32);
+  backdrop-filter: saturate(180%) blur(28px);
+  -webkit-backdrop-filter: saturate(180%) blur(28px);
+}
+#password-gate .gate-mark {
+  width: clamp(42px, 7vw, 48px);
+  height: clamp(42px, 7vw, 48px);
+  margin-bottom: clamp(16px, 3vw, 22px);
+}
+#password-gate h2 {
+  font-size: clamp(25px, 4.5vw, 34px);
+  margin-bottom: 7px;
+}
+#password-gate .gate-subtitle {
+  font-size: clamp(11px, 1.8vw, 13px);
+  margin-bottom: clamp(14px, 2.6vw, 18px);
+}
+#password-gate p {
+  font-size: clamp(13px, 2.1vw, 15px);
+  line-height: 1.45;
+  margin-bottom: clamp(14px, 2.6vw, 18px);
+}
+#password-gate input {
+  padding: clamp(12px, 2.2vw, 15px) clamp(13px, 2.4vw, 16px);
+  font-size: clamp(14px, 2.2vw, 16px);
+}
+#password-gate button {
+  margin-top: 12px;
+  padding: clamp(12px, 2.2vw, 15px) 18px;
+  font-size: clamp(14px, 2.2vw, 16px);
+}
+#password-gate .gate-error {
+  min-height: 0;
+  margin: 0;
+  font-size: 13px;
+}
+#password-gate .gate-error:empty {
+  display: none;
+}
+#password-gate .gate-error:not(:empty) {
+  margin-top: 8px;
+}
+@media (max-width: 700px) {
+  #password-gate .gate-card {
+    background: #1c1d24;
+    border-color: rgba(255,255,255,0.14);
+    box-shadow: 0 16px 44px rgba(0,0,0,0.38);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 </style>
 <div id="password-gate">
   <form class="gate-card" id="gate-form">
@@ -264,7 +335,7 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
     <div class="gate-subtitle">11-ACAD D-1AM · 2026–2027</div>
     <p>This page is password protected. Enter the password to continue.</p>
     <input id="gate-password" type="password" placeholder="Password" autocomplete="current-password" required autofocus>
-    <button type="submit">Unlock</button>
+    <button id="gate-submit" type="submit">Log in</button>
     <div class="gate-error" id="gate-error" role="status" aria-live="polite"></div>
   </form>
 </div>
@@ -1656,18 +1727,42 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   form.addEventListener("submit", async function(event){
     event.preventDefault();
     var error = document.getElementById("gate-error");
+    var submitButton = document.getElementById("gate-submit");
     error.textContent = "";
+    submitButton.classList.remove("is-error");
+    submitButton.style.background = "var(--blue)";
+    var gateElement = document.getElementById("password-gate");
+    window.clearTimeout(gateElement.errorResetTimer);
+    gateElement.classList.remove("has-error");
     try {
       var bytes = new TextEncoder().encode(field.value);
       var hash = await crypto.subtle.digest("SHA-256", bytes);
       var actual = Array.from(new Uint8Array(hash), function(b){return b.toString(16).padStart(2,"0");}).join("");
       if (actual !== expected) {
         error.textContent = "Incorrect password. Try again.";
+        gateElement.classList.add("has-error");
+        gateElement.errorResetTimer = window.setTimeout(function(){ gateElement.classList.remove("has-error"); }, 3000);
+        submitButton.classList.remove("is-error");
+        void submitButton.offsetWidth;
+        submitButton.classList.add("is-error");
+        if (navigator.vibrate) navigator.vibrate([35, 25, 35]);
         field.select();
         return;
       }
-      document.getElementById("password-gate").remove();
-      document.getElementById("protected-app").style.display = "block";
+      var gate = document.getElementById("password-gate");
+      var app = document.getElementById("protected-app");
+      app.style.display = "block";
+      app.style.opacity = "0";
+      app.style.transform = "translateY(5px)";
+      app.style.transition = "opacity .38s ease, transform .38s ease";
+      gate.classList.add("is-unlocking");
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          app.style.opacity = "1";
+          app.style.transform = "translateY(0)";
+        });
+      });
+      window.setTimeout(function(){ gate.remove(); }, 410);
       var decoded = atob(encodedParts.join(""));
       var binary = Uint8Array.from(decoded, function(c){return c.charCodeAt(0);});
       var source = new TextDecoder().decode(binary);
