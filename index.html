@@ -58,7 +58,7 @@
   * { box-sizing: border-box; }
 
   html, body {
-    height: 100%;
+    min-height: 100%;
     margin: 0;
     padding: 0;
   }
@@ -84,7 +84,6 @@
   /* Blurred aurora confined to the top of the viewport, fading into a dark base beneath it */
   html { background: #05060a; }
   body::before { content: ""; position: fixed; z-index: -2; inset: 0; pointer-events: none; background: #05060a; }
-  :root { --scrollY: 0px; }
   body::after {
     content: "";
     position: fixed;
@@ -107,20 +106,17 @@
     opacity: .96;
     -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 92%);
     mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 92%);
-    /* Parallax: the wallpaper drifts at a fraction of scroll speed, layered
-       with the ambient drift animation (same property, so they compose). */
-    transform: translate3d(0, calc(var(--scrollY) * 0.35), 0);
+    transform: translate3d(0,0,0);
     will-change: transform;
     animation: auroraDrift 22s ease-in-out infinite alternate;
   }
   /* Driven purely by transform (no background-position) so the browser only
-     has to recomposite an already-blurred layer each frame, not re-blur it.
-     Each step adds its own translate3d on top of the scroll offset above. */
+     has to recomposite an already-blurred layer each frame, not re-blur it. */
   @keyframes auroraDrift {
-    0% { transform: translate3d(calc(-3% + var(--scrollY) * 0.35), calc(1% + var(--scrollY) * 0.35), 0) scale(1.05); }
-    35% { transform: translate3d(calc(3% + var(--scrollY) * 0.35), calc(-1.5% + var(--scrollY) * 0.35), 0) scale(1.12); }
-    70% { transform: translate3d(calc(-1.5% + var(--scrollY) * 0.35), calc(2% + var(--scrollY) * 0.35), 0) scale(1.08); }
-    100% { transform: translate3d(calc(2.5% + var(--scrollY) * 0.35), calc(-0.5% + var(--scrollY) * 0.35), 0) scale(1.14); }
+    0% { transform: translate3d(-3%,1%,0) scale(1.05); }
+    35% { transform: translate3d(3%,-1.5%,0) scale(1.12); }
+    70% { transform: translate3d(-1.5%,2%,0) scale(1.08); }
+    100% { transform: translate3d(2.5%,-0.5%,0) scale(1.14); }
   }
   @media (prefers-reduced-motion: reduce) {
     body::after { animation: none; }
@@ -299,13 +295,13 @@
      card's backdrop). Swap to a solid-enough background instead. */
   @media (max-width: 700px) {
     .card {
-      background: rgba(28, 28, 30, 0.6);
+      background: #1c1c1e;
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
     .card:hover,
     .card:focus-visible {
-      background: rgba(44, 44, 46, 0.7);
+      background: #2c2c2e;
     }
   }
 </style>
@@ -351,23 +347,5 @@
   </div>
 </main>
 
-<script>
-  // Drives the wallpaper parallax: --scrollY is read by body::after's transform.
-  // rAF-throttled and passive so it stays cheap even on mobile.
-  (function () {
-    var ticking = false;
-    function update() {
-      document.documentElement.style.setProperty('--scrollY', (window.scrollY || window.pageYOffset || 0) + 'px');
-      ticking = false;
-    }
-    window.addEventListener('scroll', function () {
-      if (!ticking) {
-        window.requestAnimationFrame(update);
-        ticking = true;
-      }
-    }, { passive: true });
-    update();
-  })();
-</script>
 </body>
 </html>
