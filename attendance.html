@@ -52,7 +52,7 @@ body::after{content:"";position:fixed;z-index:-1;left:-22%;right:-22%;top:-22%;h
 @media (max-width:700px){
   /* Keep both page and login backgrounds static on phones to reduce repaint/compositing load. */
   body::after{animation:none;filter:blur(40px) saturate(125%);transform:none;background-position:50% 50%;will-change:auto}
-  #password-gate::before{animation:none!important;transform:none!important;will-change:auto}
+  #password-gate::before{animation:none!important;filter:blur(40px) saturate(125%);transform:none!important;background-position:50% 50%;will-change:auto}
 }
 button,input{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
@@ -237,6 +237,37 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
   .desktop-days-head{order:10}#days{order:11}.desktop-days-foot{order:12}
 }
 
+
+/* Extra mobile scroll optimization: avoid repainting large blurred/fixed layers while scrolling. */
+@media (max-width:700px){
+  html,body{overscroll-behavior-y:auto;}
+  body::before{position:absolute;inset:0;}
+  body::after{
+    position:absolute;left:-8%;right:-8%;top:0;height:480px;
+    filter:none!important;transform:none!important;animation:none!important;
+    background-size:100% 100%;will-change:auto;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 100%);
+    mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 100%);
+  }
+  .nav,.nav.liquidGlass{
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    background:rgba(22,24,35,.92)!important;box-shadow:none!important;
+    transition:none!important;
+  }
+  .group,.group.liquidGlass,.search,.search.liquidGlass,
+  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass,
+  .toast{
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    box-shadow:none!important;
+  }
+  .group,.group.liquidGlass{contain:layout paint;}
+  .nav .wrap{transform:none!important;}
+  *{scroll-behavior:auto!important;}
+}
+@media (max-width:700px) and (prefers-color-scheme:light){
+  .nav,.nav.liquidGlass{background:rgba(28,29,36,.92)!important;}
+}
+
 </style>
 </head>
 <body>
@@ -247,9 +278,16 @@ button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
 #password-gate::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:rgba(10,4,9,0);transition:background .45s ease}
 #password-gate.has-error::after{background:rgba(12,3,8,.62)}
 /* One CSS-only animated color field: no timers, canvas, or per-frame JavaScript. */
-#password-gate::before{content:"";position:absolute;inset:-28%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 18% 28%,rgba(0,122,255,.42),transparent 36%),radial-gradient(ellipse at 78% 22%,rgba(88,86,214,.34),transparent 38%),radial-gradient(ellipse at 70% 82%,rgba(0,190,255,.22),transparent 35%),radial-gradient(ellipse at 24% 78%,rgba(145,70,255,.20),transparent 38%);filter:blur(24px);opacity:.95;transform:translate3d(-2%,0,0) scale(1);animation:gateColorDrift 30s ease-in-out infinite alternate;backface-visibility:hidden;transition:background .45s ease}
-@keyframes gateColorDrift{0%{transform:translate3d(-1%,0,0) scale(1)}100%{transform:translate3d(1%,1%,0) scale(1.025)}}
-#password-gate.has-error::before{background:radial-gradient(ellipse at 18% 28%,rgba(180,24,38,.30),transparent 36%),radial-gradient(ellipse at 78% 22%,rgba(125,18,30,.25),transparent 38%),radial-gradient(ellipse at 70% 82%,rgba(150,15,38,.22),transparent 35%),radial-gradient(ellipse at 24% 78%,rgba(195,38,45,.18),transparent 38%)}
+#password-gate::before{content:"";position:absolute;left:-22%;right:-22%;top:-22%;height:85vh;z-index:-1;pointer-events:none;background:
+  radial-gradient(ellipse at 15% 16%,rgba(111,20,63,.78) 0%,rgba(111,20,63,0) 42%),
+  radial-gradient(ellipse at 79% 18%,rgba(112,65,31,.72) 0%,rgba(112,65,31,0) 39%),
+  radial-gradient(ellipse at 18% 78%,rgba(43,23,112,.88) 0%,rgba(43,23,112,0) 43%),
+  radial-gradient(ellipse at 78% 78%,rgba(12,49,72,.82) 0%,rgba(12,49,72,0) 42%),
+  radial-gradient(ellipse at 49% 45%,rgba(63,22,64,.38) 0%,rgba(63,22,64,0) 45%),
+  linear-gradient(145deg,#21101d 0%,#151022 48%,#081722 100%);background-size:145% 145%;filter:blur(62px) saturate(125%);opacity:.96;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 92%);mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 92%);
+  transform:translate3d(0,0,0);will-change:transform;animation:auroraDrift 22s ease-in-out infinite alternate;backface-visibility:hidden;transition:background .45s ease}
+#password-gate.has-error::before{background:radial-gradient(ellipse at 15% 16%,rgba(180,24,38,.58),transparent 42%),radial-gradient(ellipse at 79% 18%,rgba(125,18,30,.52),transparent 39%),radial-gradient(ellipse at 18% 78%,rgba(150,15,38,.48),transparent 43%),radial-gradient(ellipse at 78% 78%,rgba(195,38,45,.38),transparent 42%),linear-gradient(145deg,#18070b 0%,#10080d 48%,#08070b 100%)}
 #password-gate .gate-card{position:relative;z-index:1}
 @media(prefers-reduced-motion:reduce){#password-gate,#password-gate::before,#password-gate::after{animation:none!important;transition:none!important;transform:none!important}}
 #password-gate .gate-card{width:min(100%,420px);padding:32px;border:1px solid rgba(255,255,255,.22);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.055));backdrop-filter:saturate(180%) blur(28px);-webkit-backdrop-filter:saturate(180%) blur(28px);box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 24px 70px rgba(0,0,0,.3)}
