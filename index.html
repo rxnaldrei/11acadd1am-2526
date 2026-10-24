@@ -1,750 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-<title>Attendance — 11-ACAD D-1AM · 2026–2027</title>
+<title>Class Portal — 11 ACAD D1 AM</title>
+<meta name="description" content="Quick access portal for attendance, cleaners, and noise logs.">
+
 <style>
-@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Medium.otf") format("opentype");font-style:normal;font-weight:500;font-display:swap}
-@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Bold.otf") format("opentype");font-style:normal;font-weight:700;font-display:swap}
-@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Heavy.otf") format("opentype");font-style:normal;font-weight:800;font-display:swap}
-@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Black.otf") format("opentype");font-style:normal;font-weight:900;font-display:swap}
-:root{
-  --bg:#F2F2F7; --card:#FFFFFF; --label:#000000; --label2:rgba(60,60,67,.6); --sep:rgba(60,60,67,.18);
-  --fill:rgba(120,120,128,.12); --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30;
-  --blur:rgba(242,242,247,.78); color-scheme:light;
-}
-@media (prefers-color-scheme:dark){
-  :root{
-    --bg:#000000; --card:#1C1C1E; --label:#FFFFFF; --label2:rgba(235,235,245,.6); --sep:rgba(84,84,88,.6);
-    --fill:rgba(120,120,128,.24); --blue:#0A84FF; --green:#30D158; --orange:#FF9F0A; --red:#FF453A;
-    --blur:rgba(0,0,0,.72); color-scheme:dark;
+  @font-face {
+    font-family: 'SF Pro Text';
+    src: url('SF-Pro-Text-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
   }
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{background:var(--bg);min-height:100%;}
-body{margin:0;position:relative;isolation:isolate;background:transparent;color:var(--label);
-  font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  font-weight:500;
-  font-size:17px;line-height:1.3;-webkit-font-smoothing:antialiased}
-/* Slow, blurred aurora wallpaper behind the glass surfaces */
-body::before{content:"";position:fixed;z-index:-1;inset:-22%;pointer-events:none;background:
-  radial-gradient(ellipse at 15% 16%,rgba(111,20,63,.78) 0%,rgba(111,20,63,0) 42%),
-  radial-gradient(ellipse at 79% 18%,rgba(112,65,31,.72) 0%,rgba(112,65,31,0) 39%),
-  radial-gradient(ellipse at 18% 78%,rgba(43,23,112,.88) 0%,rgba(43,23,112,0) 43%),
-  radial-gradient(ellipse at 78% 78%,rgba(12,49,72,.82) 0%,rgba(12,49,72,0) 42%),
-  radial-gradient(ellipse at 49% 45%,rgba(63,22,64,.38) 0%,rgba(63,22,64,0) 45%),
-  linear-gradient(145deg,#21101d 0%,#151022 48%,#081722 100%);
-  background-size:145% 145%;filter:blur(62px) saturate(125%);opacity:.96;transform:translate3d(0,0,0);animation:auroraDrift 22s ease-in-out infinite alternate}
-@keyframes auroraDrift{0%{background-position:0% 10%;transform:translate3d(-2%,1%,0) scale(1)}35%{background-position:85% 15%;transform:translate3d(2%,-1%,0) scale(1.08)}70%{background-position:40% 95%;transform:translate3d(-1%,2%,0) scale(1.03)}100%{background-position:100% 60%;transform:translate3d(2%,0,0) scale(1.1)}}
-@media (prefers-reduced-motion:reduce){body::before{animation:none}}
-button,input{font:inherit;color:inherit}
-button{cursor:pointer;border:0;background:none}
-:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 55%,transparent);outline-offset:2px}
+  @font-face {
+    font-family: 'SF Pro Text';
+    src: url('SF-Pro-Text-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SF Pro Text';
+    src: url('SF-Pro-Text-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SF Pro Text';
+    src: url('SF-Pro-Text-Heavy.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SF Pro Text';
+    src: url('SF-Pro-Text-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
 
-.nav{position:sticky;top:0;z-index:5;padding:env(safe-area-inset-top,0px) 0 0;
-  background:linear-gradient(135deg,rgba(255,255,255,.56),rgba(255,255,255,.24) 48%,rgba(255,255,255,.12)),rgba(245,248,255,.18);
-  -webkit-backdrop-filter:saturate(220%) blur(34px);backdrop-filter:saturate(220%) blur(34px);
-  border-bottom:1px solid rgba(255,255,255,.72);box-shadow:0 1px 0 rgba(255,255,255,.72) inset,0 12px 38px rgba(40,60,110,.12);transition:border-color .2s}
-.nav.scrolled{border-bottom-color:var(--sep)}
-.wrap{max-width:680px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-right,0px))}
-.nav .wrap{padding-top:10px;padding-bottom:10px}
-h1{margin:0;font-size:clamp(25px,6vw,34px);font-weight:700;letter-spacing:-.8px;line-height:1.12}
-.titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.title-stack{min-width:0;display:flex;flex-direction:column;gap:5px}
-.subtitle{font-size:11px;font-weight:600;letter-spacing:.65px;text-transform:uppercase;color:var(--label2);line-height:1.3}
-.lock-btn{flex:none;width:38px;height:38px;padding:0;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.28);color:var(--label);border:1px solid rgba(255,255,255,.52);box-shadow:0 1px 2px rgba(0,0,0,.04),0 1px 0 rgba(255,255,255,.65) inset;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:background .15s,transform .15s}
-.lock-btn svg{width:19px;height:19px;display:block}
-.lock-btn:active{background:var(--fill);transform:scale(.94)}
-.lock-btn:disabled{opacity:.55;cursor:default}
-.readonly-note{margin:8px 0 12px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--orange) 12%,transparent);border:1px solid color-mix(in srgb,var(--orange) 20%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--label);font-size:14px}
-.thursday-notice{display:flex;align-items:flex-start;gap:10px;margin:12px 0;padding:13px 15px;border-radius:16px;background:color-mix(in srgb,var(--orange) 13%,transparent);border:1px solid color-mix(in srgb,var(--orange) 27%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--label);font-size:14px;line-height:1.45}
-.thursday-notice[hidden]{display:none}
-.thursday-notice .notice-icon{flex:0 0 auto;font-size:17px;line-height:1.3}
-.thursday-notice strong{display:block;margin-bottom:2px;font-weight:700}
-.search{margin-top:12px;display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(255,255,255,.50),rgba(255,255,255,.20));border:1px solid rgba(255,255,255,.72);border-radius:16px;padding:9px 12px;box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 5px 18px rgba(50,70,120,.06);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px)}
-.search svg{flex:none;width:16px;height:16px;opacity:.6}
-.search input{flex:1;min-width:0;border:0;background:none;outline:0;font-size:17px}
-.search input::placeholder{color:var(--label2)}
+  :root {
+    --bg: #000000;
+    --surface: #1c1c1e;
+    --surface-2: #2c2c2e;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.18);
+    --text-primary: #f5f5f7;
+    --text-secondary: rgba(235,235,245,0.6);
+    --accent: #0a84ff;
+    --radius: 20px;
+  }
 
-main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
-.group{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.24) 55%,rgba(255,255,255,.17));border:1px solid rgba(255,255,255,.78);border-radius:22px;overflow:hidden;margin:0 0 12px;box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 -1px 0 rgba(255,255,255,.18) inset,0 12px 34px rgba(40,55,100,.12);-webkit-backdrop-filter:saturate(210%) blur(28px);backdrop-filter:saturate(210%) blur(28px)}
-.head{margin:24px 16px 7px;font-size:13px;color:var(--label2);text-transform:uppercase;letter-spacing:-.08px;display:flex;justify-content:space-between}
-.foot{margin:7px 16px 0;font-size:13px;color:var(--label2)}
+  * { box-sizing: border-box; }
 
-.row{display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 16px;position:relative}
-.row+.row::before{content:"";position:absolute;top:0;left:56px;right:0;height:.5px;background:var(--sep)}
-.date-row{justify-content:space-between}
-.date-row input{background:rgba(120,120,128,.10);border:1px solid rgba(255,255,255,.48);border-radius:11px;padding:6px 10px;font-size:17px;min-width:0}
-.chev{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--blue);font-size:22px;line-height:1}
-.chev:active{background:var(--fill)}
-.date-row .mid{display:flex;align-items:center;gap:4px;flex:1;justify-content:center}
-.today{color:var(--blue);font-size:17px;padding:6px 8px;border-radius:8px}
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
-.stats{display:grid;grid-template-columns:repeat(3,1fr)}
-.stat{padding:14px 8px;text-align:center}
-.stat+.stat{border-left:.5px solid var(--sep)}
-.stat b{display:block;font-size:28px;font-weight:700;letter-spacing:.36px}
-.stat span{font-size:13px;color:var(--label2)}
-.stat.p b{color:var(--green)} .stat.l b{color:var(--orange)} .stat.a b{color:var(--red)} .stat.e b{color:var(--blue)}
+  body {
+    font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #000000;
+    color: var(--text-primary);
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    padding-top: calc(24px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
 
-.check{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--label2);display:grid;place-items:center;
-  color:#fff;font-size:14px;font-weight:700;transition:background .15s,border-color .15s,transform .15s}
-.check:active{transform:scale(.88)}
-.check svg{width:15px;height:15px;display:none}
-.s-present .check{background:var(--green);border-color:var(--green)}
-.s-present .check svg{display:block}
-.s-late .check{background:var(--orange);border-color:var(--orange)}
-.s-absent .check{background:var(--red);border-color:var(--red)}
-.name{flex:1;min-width:0;font-size:16px;overflow-wrap:anywhere}
-.s-absent .name{color:var(--label2)}
-.pills{display:flex;gap:6px;flex:none}
-.pill{padding:5px 11px;border-radius:999px;background:var(--fill);font-size:14px;font-weight:500;color:var(--label2);transition:background .15s,color .15s}
-.pill.late[aria-pressed=true]{background:var(--orange);color:#fff}
-.pill.absent[aria-pressed=true]{background:var(--red);color:#fff}
-.days{max-height:340px;overflow-y:scroll;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--label2) transparent}
-/* Override .group and .liquidGlass overflow:hidden so All Days can actually scroll. */
-.group.days.liquidGlass{max-height:340px;overflow-y:scroll!important;overflow-x:hidden!important;scrollbar-gutter:stable;scrollbar-width:auto;scrollbar-color:var(--label2) rgba(120,120,128,.12)}
-.group.days.liquidGlass::-webkit-scrollbar{width:10px}
-.group.days.liquidGlass::-webkit-scrollbar-track{background:rgba(120,120,128,.12);border-radius:999px}
-.group.days.liquidGlass::-webkit-scrollbar-thumb{background:var(--label2);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
-.group.days.liquidGlass::-webkit-scrollbar-thumb:hover{background:var(--label);border:2px solid transparent;background-clip:padding-box}
-.days::-webkit-scrollbar{width:8px}
-.days::-webkit-scrollbar-track{background:transparent}
-.days::-webkit-scrollbar-thumb{background:var(--label2);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
-.days::-webkit-scrollbar-thumb:hover{background:var(--label);border:2px solid transparent;background-clip:padding-box}
-.day-row{width:100%;text-align:left;display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 16px;position:relative}
-.day-row+.day-row::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
-.day-row:active{background:var(--fill)}
-.day-row.sel{background:var(--fill)}
-.day-row .dn{flex:1;min-width:0}
-.day-row .dn small{display:block;font-size:13px;color:var(--label2)}
-.day-row .dc{display:flex;gap:10px;font-size:15px;font-weight:600}
-.day-row .dc .p{color:var(--green)} .day-row .dc .l{color:var(--orange)} .day-row .dc .a{color:var(--red)} .day-row .dc .e{color:var(--blue)}
-.day-row .none{font-size:14px;font-weight:400;color:var(--label2)}
-.empty{padding:18px 16px;color:var(--label2);text-align:center}
+  /* Ambient aurora backdrop: a few large, cheap, blurred blobs that
+     drift slowly. Fixed + GPU-composited so scrolling/resizing stays
+     smooth, and capped in size/blur so mobile GPUs don't choke. */
+  .aurora {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: #000000;
+  }
 
-.action{width:100%;text-align:left;padding:11px 16px;font-size:17px;color:var(--blue);display:block;min-height:44px;position:relative}
-.action+.action::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
-.action:active{background:var(--fill)}
-.action.danger{color:var(--red)}
+  .aurora::after {
+    /* fade the colorful top into solid black toward the bottom,
+       exactly like the reference screenshot */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, transparent 25%, #000000 70%);
+    z-index: 1;
+  }
 
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);max-width:min(92vw,420px);
-  background:rgba(40,40,42,.82);border:1px solid rgba(255,255,255,.22);box-shadow:0 12px 36px rgba(0,0,0,.18),0 1px 0 rgba(255,255,255,.16) inset;color:#fff;padding:12px 18px;border-radius:20px;font-size:15px;text-align:center;opacity:0;pointer-events:none;
-  transition:opacity .25s,transform .25s;-webkit-backdrop-filter:saturate(180%) blur(28px);backdrop-filter:saturate(180%) blur(28px);z-index:20}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-@media (prefers-color-scheme:dark){
-  .nav{background:linear-gradient(135deg,rgba(35,39,52,.66),rgba(25,27,38,.38) 55%,rgba(18,20,30,.30));border-bottom-color:rgba(255,255,255,.24);box-shadow:0 1px 0 rgba(255,255,255,.20) inset,0 12px 38px rgba(0,0,0,.20);-webkit-backdrop-filter:saturate(200%) blur(36px);backdrop-filter:saturate(200%) blur(36px)}
-  .group{background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.055) 60%,rgba(255,255,255,.09));border-color:rgba(255,255,255,.24);box-shadow:0 1px 0 rgba(255,255,255,.26) inset,0 -1px 0 rgba(255,255,255,.05) inset,0 14px 36px rgba(0,0,0,.22);-webkit-backdrop-filter:saturate(190%) blur(30px);backdrop-filter:saturate(190%) blur(30px)}
-  .lock-btn{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);box-shadow:0 1px 0 rgba(255,255,255,.08) inset}
-  .search{background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.055));border-color:rgba(255,255,255,.24);box-shadow:0 1px 0 rgba(255,255,255,.20) inset,0 8px 24px rgba(0,0,0,.10)}
-  .date-row input{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
-}
-@media (max-width:480px){.pills{gap:4px}.pill{padding:5px 8px;font-size:13px}.stat b{font-size:24px}}
-@media (max-width:380px){.pill{padding:5px 6px;font-size:12px}.row{gap:10px;padding:8px 12px}.row+.row::before{left:50px}}
+  .blob {
+    position: absolute;
+    width: 70vw;
+    height: 70vw;
+    max-width: 560px;
+    max-height: 560px;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.75;
+    will-change: transform;
+    transform: translate3d(0,0,0);
+  }
 
+  .blob-1 {
+    top: -20%;
+    left: -10%;
+    background: #7b3fe4;
+    animation: drift1 22s ease-in-out infinite;
+  }
 
-/* Integrated Liquid-Glass-CSS-inspired refraction layer (local, no CDN required) */
-.liquidGlass{position:relative;isolation:isolate;overflow:hidden;}
-.liquidGlass::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);filter:url(#liquidGlassFilter2);opacity:.42;}
-.liquidGlass::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.015) 55%,rgba(255,255,255,.055));box-shadow:inset 1px 1px 2px rgba(255,255,255,.42),inset -1px -2px 3px rgba(20,20,30,.16);}
-.liquidGlass>*{position:relative;z-index:1;}
-.nav.liquidGlass::before{opacity:.28;backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%)}
-.group.liquidGlass::before{opacity:.48;backdrop-filter:blur(7px) saturate(155%);-webkit-backdrop-filter:blur(7px) saturate(155%)}
-button.liquidGlass{overflow:hidden;}
-button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
-@media(prefers-reduced-transparency:reduce){.liquidGlass::before{filter:none;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:.2}}
+  .blob-2 {
+    top: -25%;
+    right: -15%;
+    background: #e05a3c;
+    animation: drift2 26s ease-in-out infinite;
+  }
 
+  .blob-3 {
+    top: -5%;
+    left: 20%;
+    background: #2d6ae0;
+    animation: drift3 30s ease-in-out infinite;
+  }
 
-/* Minimal frosted-glass finish: blur only, no refraction, shine, or glossy gradients. */
-.liquidGlass{isolation:auto!important;}
-.liquidGlass::before,.liquidGlass::after{content:none!important;display:none!important;filter:none!important;}
-.liquidGlass>*{position:static;z-index:auto;}
-.nav,.nav.liquidGlass{background:rgba(245,247,252,.60)!important;border-bottom:1px solid rgba(255,255,255,.22)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(24px)!important;backdrop-filter:blur(24px)!important;}
-.group,.group.liquidGlass{background:rgba(245,247,252,.43)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(22px)!important;backdrop-filter:blur(22px)!important;}
-.search,.search.liquidGlass{background:rgba(245,247,252,.38)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important;}
-.lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:rgba(245,247,252,.28)!important;border:1px solid rgba(255,255,255,.20)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;}
-.toast{box-shadow:none!important;-webkit-backdrop-filter:blur(22px)!important;backdrop-filter:blur(22px)!important;}
-@media(prefers-color-scheme:dark){
- .nav,.nav.liquidGlass{background:rgba(22,24,35,.58)!important;border-bottom-color:rgba(255,255,255,.12)!important;}
- .group,.group.liquidGlass{background:rgba(22,24,35,.48)!important;border-color:rgba(255,255,255,.12)!important;}
- .search,.search.liquidGlass{background:rgba(22,24,35,.40)!important;border-color:rgba(255,255,255,.12)!important;}
- .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.12)!important;}
-}
+  @keyframes drift1 {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(6%, 8%, 0) scale(1.08); }
+  }
+
+  @keyframes drift2 {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(-8%, 6%, 0) scale(1.05); }
+  }
+
+  @keyframes drift3 {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(4%, -6%, 0) scale(1.1); }
+  }
+
+  /* Respect reduced-motion and also hard-disable on small/low-power
+     screens' battery by just freezing the frame — still shows the
+     gradient, just no animation cost */
+  @media (prefers-reduced-motion: reduce) {
+    .blob { animation: none !important; }
+  }
+
+  /* Smaller, slightly less blurred blobs on narrow screens:
+     fewer pixels for the GPU to blur each frame */
+  @media (max-width: 480px) {
+    .blob {
+      width: 85vw;
+      height: 85vw;
+      filter: blur(50px);
+    }
+  }
+
+  main {
+    width: 100%;
+    max-width: 920px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+
+  .subtitle {
+    font-size: clamp(15px, 2vw, 17px);
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 480px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    width: 100%;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 28px 24px;
+    background: rgba(28, 28, 30, 0.6);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    text-decoration: none;
+    color: var(--text-primary);
+    overflow: hidden;
+    will-change: transform;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.35s ease,
+                box-shadow 0.35s ease,
+                background 0.35s ease;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    transform: translateY(-4px) scale(1.015);
+    border-color: var(--border-hover);
+    background: rgba(44, 44, 46, 0.7);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+
+  .card:hover::before,
+  .card:focus-visible::before {
+    opacity: 1;
+  }
+
+  .card:active {
+    transform: translateY(-1px) scale(0.99);
+  }
+
+  .card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--text-primary);
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .card-title {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .card-desc {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin: -10px 0 0;
+  }
+
+  .arrow {
+    margin-top: auto;
+    align-self: flex-end;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.35s ease;
+  }
+
+  .card:hover .arrow,
+  .card:focus-visible .arrow {
+    background: var(--accent);
+    transform: translateX(3px);
+  }
+
+  .arrow svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--text-primary);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  footer {
+    margin-top: 56px;
+    font-size: 12px;
+    color: rgba(235,235,245,0.35);
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; }
+    header { margin-bottom: 36px; }
+  }
 </style>
 </head>
 <body>
 
-<svg aria-hidden="true" width="0" height="0" style="position:absolute;visibility:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
-<filter id="liquidGlassFilter" color-interpolation-filters="sRGB" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.011" numOctaves="2" seed="8" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence"/><feDisplacementMap in="SourceGraphic" in2="turbulence" scale="22" xChannelSelector="R" yChannelSelector="B" x="0%" y="0%" width="100%" height="100%"/></filter>
-<filter id="liquidGlassFilter2" color-interpolation-filters="linearRGB" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse"><feBlend mode="screen" in="SourceGraphic" in2="SourceGraphic" result="blend"/><feTurbulence type="fractalNoise" baseFrequency="0.019 0.008" numOctaves="3" seed="8" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence"/><feDisplacementMap in="blend" in2="turbulence" scale="3" xChannelSelector="R" yChannelSelector="B"/></filter>
-</defs></svg>
+<div class="aurora" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
 
-<header class="nav liquidGlass blur-5" id="nav">
-  <div class="wrap">
-    <div class="titlebar"><div class="title-stack"><h1>Attendance</h1><div class="subtitle">11-ACAD D-1AM <span aria-hidden="true">·</span> 2026–2027</div></div><button class="lock-btn liquidGlass blur-4" id="dayLock" type="button" aria-label="Lock day" title="Lock day" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></button></div>
-    <label class="search liquidGlass blur-5">
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
-      <input id="q" type="search" placeholder="Search" aria-label="Search names" autocomplete="off">
-    </label>
+<main>
+  <header>
+    <p class="eyebrow">11 ACAD D1 AM</p>
+    <h1>Class Portal</h1>
+    <p class="subtitle">Quick access to attendance, cleaning duty, and noise records.</p>
+  </header>
+
+  <div class="grid" role="list" aria-label="Portal links">
+
+    <a class="card" role="listitem" href="https://rxnaldrei.github.io/11acadd1am-2627/attendance.html" target="_blank" rel="noopener noreferrer" aria-label="Open Attendance tracker in a new tab">
+      <div class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="4"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="m8.5 14.5 2 2 4.5-4.5"/></svg>
+      </div>
+      <h2 class="card-title">Attendance</h2>
+      <p class="card-desc">Mark and review class attendance.</p>
+      <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+    <a class="card" role="listitem" href="https://rxnaldrei.github.io/11acadd1am-2627/cleaners.html" target="_blank" rel="noopener noreferrer" aria-label="Open List of Cleaners in a new tab">
+      <div class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 3v3M5 7l1.5 1.5M19 7l-1.5 1.5"/><path d="M12 9c3 0 5 2 5 5 0 3-2 7-5 7s-5-4-5-7c0-3 2-5 5-5Z"/><path d="M9 21h6"/></svg>
+      </div>
+      <h2 class="card-title">List of Cleaners</h2>
+      <p class="card-desc">See who's assigned to clean.</p>
+      <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+    <a class="card" role="listitem" href="https://rxnaldrei.github.io/11acadd1am-2627/noisy.html" target="_blank" rel="noopener noreferrer" aria-label="Open List of Noisy in a new tab">
+      <div class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 4V6L7 10H3Z"/><path d="M16 9c1 1 1 5 0 6M19 7c2 2 2 8 0 10"/></svg>
+      </div>
+      <h2 class="card-title">List of Noisy</h2>
+      <p class="card-desc">Track noise log entries.</p>
+      <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
   </div>
-</header>
 
-<main class="wrap">
-  <div class="group liquidGlass blur-5" style="margin-top:16px">
-    <div class="row date-row">
-      <button class="chev liquidGlass blur-3" id="prev" aria-label="Previous day">‹</button>
-      <div class="mid"><input type="date" id="date" aria-label="Date"><button class="today liquidGlass blur-3" id="today">Today</button></div>
-      <button class="chev liquidGlass blur-3" id="next" aria-label="Next day">›</button>
-    </div>
-  </div>
-
-  <div class="thursday-notice liquidGlass blur-4" id="thursdayNotice" role="status" aria-live="polite" hidden>
-    <span class="notice-icon" aria-hidden="true">ⓘ</span>
-    <span><strong>Thursday schedule notice</strong>There might be no attendance recorded for this day because Thursday may be an asynchronous day or homeroom day.</span>
-  </div>
-
-  <div class="group stats liquidGlass blur-5" aria-live="polite">
-    <div class="stat p"><b id="c-present">0</b><span>Present</span></div>
-    <div class="stat l"><b id="c-late">0</b><span>Late</span></div>
-    <div class="stat a"><b id="c-absent">0</b><span>Absent</span></div>
-  </div>
-  <p class="foot" id="unmarked"></p>
-  <p class="readonly-note" id="readonlyNote" hidden></p>
-
-  <div id="lists"></div>
-
-  <div class="head"><span>All Days</span><span id="daysInfo"></span></div>
-  <div class="group days liquidGlass blur-5" id="days"></div>
-  <p class="foot">Every day since attendance started. Tap a day to open it.</p>
-
-  <div class="head"><span>Actions</span></div>
-  <div class="group liquidGlass blur-5">
-    <button class="action liquidGlass blur-4" id="sync">Save to Google Sheets</button>
-    <button class="action liquidGlass blur-4" id="allPresent">Set Everyone: Present</button>
-    <button class="action liquidGlass blur-4" id="exportImg">Export as Image</button>
-    <button class="action liquidGlass blur-4" id="export">Export to File</button>
-    <button class="action danger liquidGlass blur-4" id="clearDay">Clear This Day</button>
-  </div>
-  <p class="foot">Attendance loads from Google Sheets when the website opens or is refreshed. Website changes can be saved to the sheet with the button below.</p>
+  <footer>
+    <p>11 ACAD D1 AM &middot; 2026&ndash;2027</p>
+  </footer>
 </main>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script>
-(function(){
-  var SYNC_URL = "https://script.google.com/macros/s/AKfycbzUiIAcYWRIWZgiOTWNm_Q2T9Kn0sMVhmIObs-3lemhAc2Ikgdymric-R3eJT41t4_R/exec"; // Google Apps Script web app URL
-  var ROSTER = {
-    Male: [
-      "ALABAN, EDMARK JOHN P.","ARAO, MARK KEN C.","AREDIDON, JHON JAYRIC N.","BALLAD, EVON JAMES T.",
-      "BARTOLATA, ELIJAH GABRIEL N.","BERIÑO, MICHAEL ANGELO B.","BRAVO, AERON JAYDEN V.","CARRILLO, AKIKO KYLEE L.",
-      "CLAUDIO, MARK JOSEPH R.","CONCEPCION, KEAN DALE H.","DIOLA, JAIRUS RAFAEL B.","DOLORES, GIAN CARLO U.",
-      "ECHON, JHAY MARCHT E.","ESPAÑOLA, PRINZE DANRIL S.","ESPIRITU, SAMUEL ALDRIN D.","ESTRADA, DRU JACOBE N.",
-      "FELIPE, JOHN GREG CARDO R.","FUNTELON, JERALD M.","GALANG, KEVIN RILEY CO GALANG C.","GEVEN, KIAN A.",
-      "GUTIERREZ, ANTOINE SCOTT C.","JUANIZA, SEAN DAVID R.","LEBIS., JOSEPH D.","MINDORO, SHAEL JHON A.",
-      "MORIS, BERNARD V.","PACATANG, RAINMART ALDREI","PAJO, MARIUS ANDREI T.","PANGILINAN, CHRISTIAN JAZTIN D.",
-      "PAYAO, JIMBOY B.","PELAYO, MIGUEL LORENZO D.","REYES, CEDRICK H.","ROQUE, XHENDRICK A.",
-      "ROYO, JOHN LAURENCE B.","SALAZAR, RYAN YUAN B.","SANTIAGO, JOAQUIN R.","SILUD, JOMMY S.",
-      "TAN, JEORGE VINCENT B.","TEJERO, HAIL KYLIE B.","URSUA JR, JUN Q."
-    ],
-    Female: [
-      "BANECO, MARIEL C.","BERNARDO, JHANICA B.","BOHOL, PRINCESS MAVIE M.","BUATO, NOR-JHUNAIMA M.",
-      "DULAY, KAYE XANDRIA D.","ESTRELLA, KEZIAH BERNICE D.","SARCOS, JANELLE RAINE A.","VILLAMOR, ELAIZA T."
-    ]
-  };
-  var START_DATE = "2026-07-20"; // first day of attendance; change this if your first day is different
-  var HISTORY = {"2026-07-20":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"absent","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"absent","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-07-21":{"ALABAN, EDMARK JOHN P.":"absent","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"absent","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"absent","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-07-22":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"absent","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"absent","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-07-24":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"late","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"late","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"late","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-07-28":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"absent","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-07-29":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"late","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"late","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-07-31":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"late","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-08-03":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"late","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"late","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"absent","ECHON, JHAY MARCHT E.":"absent","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"late","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"absent","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"absent","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"late","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"late","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"late","VILLAMOR, ELAIZA T.":"present"},"2026-08-04":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"late","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"absent","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"absent","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-08-05":{"ALABAN, EDMARK JOHN P.":"absent","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"absent","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-08-10":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"absent","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"absent","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"absent","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"late","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"absent","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"late","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"absent","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"absent","VILLAMOR, ELAIZA T.":"present"},"2026-08-11":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"absent","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"absent","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"late","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"absent","ESPIRITU, SAMUEL ALDRIN D.":"late","ESTRADA, DRU JACOBE N.":"absent","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"late","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"absent","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"late","REYES, CEDRICK H.":"late","ROQUE, XHENDRICK A.":"late","ROYO, JOHN LAURENCE B.":"absent","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"late","URSUA JR, JUN Q.":"late","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"late","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"absent"},"2026-08-12":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"late","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"late","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"late","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"late","DOLORES, GIAN CARLO U.":"absent","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"late","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"late","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"late","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"absent","VILLAMOR, ELAIZA T.":"present"},"2026-08-17":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"late","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"late","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"late","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"absent","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"late","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"absent","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"late","GALANG, KEVIN RILEY CO GALANG C.":"absent","GEVEN, KIAN A.":"late","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"absent","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"late","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"late","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"late","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"absent","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"absent","VILLAMOR, ELAIZA T.":"late"},"2026-08-19":{"ALABAN, EDMARK JOHN P.":"late","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"late","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"absent","CLAUDIO, MARK JOSEPH R.":"late","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"absent","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"absent","GALANG, KEVIN RILEY CO GALANG C.":"late","GEVEN, KIAN A.":"late","GUTIERREZ, ANTOINE SCOTT C.":"absent","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"absent","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"late","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"late","TAN, JEORGE VINCENT B.":"late","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"late","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-08-24":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"absent","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"absent","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-08-25":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"absent","ECHON, JHAY MARCHT E.":"absent","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"absent","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-08-26":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"absent","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"absent","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"late","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"late"},"2026-09-01":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"late","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"absent","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-09-02":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"absent","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"absent","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"absent","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"absent"},"2026-09-07":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"absent","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"absent","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-09-08":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"absent","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"absent","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"absent","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"absent","FELIPE, JOHN GREG CARDO R.":"absent","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"absent","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"absent","MINDORO, SHAEL JHON A.":"absent","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"absent","TAN, JEORGE VINCENT B.":"absent","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"absent","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","VILLAMOR, ELAIZA T.":"present","ESTRELLA, KEZIAH BERNICE D.":"excused","SARCOS, JANELLE RAINE A.":"excused"},"2026-09-09":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"absent","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"absent","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"absent","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"absent","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"absent","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"absent","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"absent","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present","DOLORES, GIAN CARLO U.":"excused"},"2026-09-11":{"ALABAN, EDMARK JOHN P.":"absent","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"absent","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"absent","GALANG, KEVIN RILEY CO GALANG C.":"absent","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"absent","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","VILLAMOR, ELAIZA T.":"present","BOHOL, PRINCESS MAVIE M.":"excused","SARCOS, JANELLE RAINE A.":"excused"},"2026-09-14":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"absent","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"absent","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"absent","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"absent","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-09-15":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"late","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"late","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"late","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"late","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"absent","GALANG, KEVIN RILEY CO GALANG C.":"late","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"absent","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"late","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"absent","BOHOL, PRINCESS MAVIE M.":"late","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"late","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"late","URSUA JR, JUN Q.":"excused"},"2026-09-16":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"absent","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"absent","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"absent","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"absent","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"late","BUATO, NOR-JHUNAIMA M.":"absent","DULAY, KAYE XANDRIA D.":"late","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"late","VILLAMOR, ELAIZA T.":"present"},"2026-09-21":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"absent","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"absent","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"late","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"absent","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"late","GALANG, KEVIN RILEY CO GALANG C.":"absent","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"late","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"absent","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"late","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"absent","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"late","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"absent","VILLAMOR, ELAIZA T.":"late"},"2026-09-22":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"absent","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"absent","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-09-23":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"late","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"late","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"late","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"late","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"late","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"late","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"late","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"late","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"late","TAN, JEORGE VINCENT B.":"absent","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"late","ESTRELLA, KEZIAH BERNICE D.":"present","VILLAMOR, ELAIZA T.":"present","SARCOS, JANELLE RAINE A.":"excused"},"2026-09-25":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"absent","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-10-05":{"ALABAN, EDMARK JOHN P.":"absent","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"absent","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"absent","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-10-06":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"absent","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"late","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"late","FUNTELON, JERALD M.":"late","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"late","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"absent","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"absent","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"late","BANECO, MARIEL C.":"late","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"absent","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"absent"},"2026-10-07":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"late","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"late","FUNTELON, JERALD M.":"late","GALANG, KEVIN RILEY CO GALANG C.":"late","GEVEN, KIAN A.":"late","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"late","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"late","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"absent","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"late"},"2026-10-09":{"ALABAN, EDMARK JOHN P.":"absent","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"absent","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"absent","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"absent","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"absent","VILLAMOR, ELAIZA T.":"present"},"2026-10-12":{"ALABAN, EDMARK JOHN P.":"absent","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"late","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"absent","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"absent","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"late","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"late","PANGILINAN, CHRISTIAN JAZTIN D.":"absent","PAYAO, JIMBOY B.":"absent","PELAYO, MIGUEL LORENZO D.":"late","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"late","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-10-13":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"absent","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"absent","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"absent","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-10-14":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"late","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"late","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"late","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"absent","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"absent","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"late","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"absent","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"late","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"absent","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"absent","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"late","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"late","BANECO, MARIEL C.":"present","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"late","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"late","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-10-16":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"late","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"present","VILLAMOR, ELAIZA T.":"present"},"2026-10-19":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"absent","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"absent","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"present","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"present","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"present","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"absent","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"absent","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"absent","VILLAMOR, ELAIZA T.":"present"},"2026-10-20":{"ALABAN, EDMARK JOHN P.":"present","ARAO, MARK KEN C.":"present","AREDIDON, JHON JAYRIC N.":"present","BALLAD, EVON JAMES T.":"present","BARTOLATA, ELIJAH GABRIEL N.":"present","BERIÑO, MICHAEL ANGELO B.":"present","BRAVO, AERON JAYDEN V.":"present","CARRILLO, AKIKO KYLEE L.":"present","CLAUDIO, MARK JOSEPH R.":"present","CONCEPCION, KEAN DALE H.":"present","DIOLA, JAIRUS RAFAEL B.":"present","DOLORES, GIAN CARLO U.":"present","ECHON, JHAY MARCHT E.":"present","ESPAÑOLA, PRINZE DANRIL S.":"present","ESPIRITU, SAMUEL ALDRIN D.":"absent","ESTRADA, DRU JACOBE N.":"present","FELIPE, JOHN GREG CARDO R.":"present","FUNTELON, JERALD M.":"present","GALANG, KEVIN RILEY CO GALANG C.":"present","GEVEN, KIAN A.":"present","GUTIERREZ, ANTOINE SCOTT C.":"present","JUANIZA, SEAN DAVID R.":"present","LEBIS., JOSEPH D.":"present","MINDORO, SHAEL JHON A.":"present","MORIS, BERNARD V.":"present","PACATANG, RAINMART ALDREI":"late","PAJO, MARIUS ANDREI T.":"present","PANGILINAN, CHRISTIAN JAZTIN D.":"present","PAYAO, JIMBOY B.":"present","PELAYO, MIGUEL LORENZO D.":"present","REYES, CEDRICK H.":"present","ROQUE, XHENDRICK A.":"present","ROYO, JOHN LAURENCE B.":"present","SALAZAR, RYAN YUAN B.":"present","SANTIAGO, JOAQUIN R.":"present","SILUD, JOMMY S.":"present","TAN, JEORGE VINCENT B.":"present","TEJERO, HAIL KYLIE B.":"present","URSUA JR, JUN Q.":"absent","BANECO, MARIEL C.":"absent","BERNARDO, JHANICA B.":"present","BOHOL, PRINCESS MAVIE M.":"present","BUATO, NOR-JHUNAIMA M.":"present","DULAY, KAYE XANDRIA D.":"present","ESTRELLA, KEZIAH BERNICE D.":"present","SARCOS, JANELLE RAINE A.":"late","VILLAMOR, ELAIZA T.":"present"}}; // imported from the Google Sheet (July to October 2026)
-  var KEY = "attendance-checklist-v1";
-  var LOCK_KEY = "attendance-day-locks-v1";
-  // Always start locked on every page load; never restore saved unlock overrides.
-  var dayLocks = {};
-  try { localStorage.removeItem(LOCK_KEY); } catch (e) {}
-  var records = {};
-  try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === "object") records = s; } catch (e) {}
-  function seedHistory(){
-    Object.keys(HISTORY).forEach(function(d){
-      var r = records[d] || (records[d] = {});
-      Object.keys(HISTORY[d]).forEach(function(n){ if (!r[n]) r[n] = HISTORY[d][n]; });
-    });
-  }
-  try {
-    if (!localStorage.getItem("attendance-seed-v3")) {
-      seedHistory();
-      localStorage.setItem("attendance-seed-v3", "1");
-      localStorage.setItem(KEY, JSON.stringify(records));
-    }
-  } catch (e) { seedHistory(); }
-  function save(){ try { localStorage.setItem(KEY, JSON.stringify(records)); } catch (e) {} }
-
-  function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
-  function shift(str,n){ var p=str.split("-"); return iso(new Date(+p[0],+p[1]-1,+p[2]+n)); }
-  function isWeekend(str){ var p=str.split("-"), w=new Date(+p[0],+p[1]-1,+p[2]).getDay(); return w===0||w===6; }
-  function shiftWeekday(str,n){ var d=shift(str,n), i=0; while(isWeekend(d)&&i++<7) d=shift(d,n); return d; }
-  var $ = function(id){ return document.getElementById(id); };
-  var current = iso(new Date()), query = "";
-  $("date").value = current; $("date").min = START_DATE;
-  var CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3.2L13 4.5"/></svg>';
-  var ALL = [];
-  Object.keys(ROSTER).forEach(function(g){
-    ROSTER[g] = ROSTER[g].filter(function(n){
-      var surname = n.split(",")[0].trim().toUpperCase();
-      return surname !== "ABAYON" && surname !== "ULIT";
-    });
-    ROSTER[g].forEach(function(n){ ALL.push({group:g,name:n}); });
-  });
-  // Remove these names from saved attendance data too, if older browser data contains them.
-  Object.keys(records).forEach(function(d){
-    Object.keys(records[d] || {}).forEach(function(n){
-      var surname = n.split(",")[0].trim().toUpperCase();
-      if (surname === "ABAYON" || surname === "ULIT") delete records[d][n];
-    });
-  });
-  Object.keys(records).forEach(function(ds){
-    Object.keys(records[ds] || {}).forEach(function(name){ if (records[ds][name] === "excused") delete records[ds][name]; });
-  });
-  save();
-
-  function day(){ return records[current] || (records[current] = {}); }
-  function isAutoLocked(date){
-    var now = new Date(), ds = date || current, todayStr = iso(now);
-    // Only today's date is editable, from 12:00 AM until 12:44:59 PM local time.
-    // Every past and future date is always locked; today locks at 12:45 PM.
-    return ds !== todayStr || now.getHours() > 12 || (now.getHours() === 12 && now.getMinutes() >= 45);
-  }
-  function isLocked(date){
-    var ds = date || current;
-    // The schedule determines the default, but the lock button can override it.
-    if (Object.prototype.hasOwnProperty.call(dayLocks, ds)) return dayLocks[ds] !== false;
-    return isAutoLocked(ds);
-  }
-  function saveLocks(){
-    try { localStorage.setItem(LOCK_KEY, JSON.stringify(dayLocks)); } catch (e) {}
-  }
-  function updateLockUI(){
-    var locked = isLocked();
-    var autoLocked = isAutoLocked();
-    var b = $("dayLock");
-    b.innerHTML = locked
-      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'
-      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 7.5-2"/></svg>';
-    b.setAttribute("aria-label", locked ? "Unlock day" : "Lock day");
-    b.setAttribute("title", locked ? "Unlock day" : "Lock day");
-    b.setAttribute("aria-pressed", locked ? "true" : "false");
-    b.disabled = false;
-    b.setAttribute("aria-label", locked ? "Unlock day" : "Lock day");
-    b.setAttribute("title", locked ? "Manually unlock this day" : "Manually lock this day");
-    var isOverride = Object.prototype.hasOwnProperty.call(dayLocks, current);
-    $("readonlyNote").hidden = !locked;
-    $("readonlyNote").textContent = locked
-      ? (isOverride && dayLocks[current] !== false
-          ? "This day is manually locked. Use the lock button to unlock it."
-          : (current < iso(new Date())
-              ? "This is a previous day and is locked by default. Use the lock button to unlock it if needed."
-              : (current > iso(new Date())
-                  ? "This is a future day and is locked by default. Use the lock button to unlock it if needed."
-                  : "Today's attendance is locked after 12:45 PM by default. Use the lock button to unlock it if needed.")))
-      : (isOverride && dayLocks[current] === false
-          ? "This day is manually unlocked, overriding the automatic schedule."
-          : "Only today is normally editable from 12:00 AM until 12:45 PM local time.");
-  }
-  function setStatus(name, st){
-    if (isLocked()) { toast("This day is locked and read-only"); return; }
-    var d = day();
-    if (d[name] === st) delete d[name]; else d[name] = st;
-    save(); render();
-  }
-
-  function allDays(){
-    var out = [], d = START_DATE, end = iso(new Date());
-    if (current > end) end = current;
-    for (var i = 0; d <= end && i < 1500; i++){ if (!isWeekend(d)) out.push(d); d = shift(d, 1); }
-    return out;
-  }
-  function renderDays(){
-    var host = $("days"), list = allDays().reverse(), todayStr = iso(new Date());
-    host.innerHTML = "";
-    var marked = 0;
-    list.forEach(function(ds){
-      var r = records[ds] || {}, c = {present:0, late:0, absent:0}, any = false;
-      ALL.forEach(function(p){ if (r[p.name] && r[p.name] !== "excused"){ c[r[p.name]]++; any = true; } });
-      if (any) marked++;
-      var p = ds.split("-"), dt = new Date(+p[0], +p[1]-1, +p[2]);
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "day-row" + (ds === current ? " sel" : "");
-      b.innerHTML = '<span class="dn">' + dt.toLocaleDateString(undefined,{month:"short",day:"numeric"}) +
-        '<small>' + dt.toLocaleDateString(undefined,{weekday:"long",year:"numeric"}) + (ds === todayStr ? " · Today" : "") + '</small></span>' +
-        (any ? '<span class="dc"><span class="p">' + c.present + '</span><span class="l">' + c.late + '</span><span class="a">' + c.absent + '</span></span>'
-             : '<span class="none">Not marked</span>');
-      b.addEventListener("click", function(){ setDate(ds); window.scrollTo({top:0, behavior:"smooth"}); });
-      host.appendChild(b);
-    });
-    $("daysInfo").textContent = marked + " / " + list.length + " marked";
-  }
-
-  function render(){
-    var selectedParts = current.split("-").map(Number);
-    var selectedDate = new Date(selectedParts[0], selectedParts[1] - 1, selectedParts[2]);
-    $("thursdayNotice").hidden = selectedDate.getDay() !== 4;
-    renderDays();
-    updateLockUI();
-    var locked = isLocked();
-    $("allPresent").disabled = locked;
-    $("clearDay").disabled = locked;
-    $("allPresent").style.opacity = locked ? ".45" : "1";
-    $("clearDay").style.opacity = locked ? ".45" : "1";
-    var rec = records[current] || {};
-    var counts = {present:0, late:0, absent:0};
-    ALL.forEach(function(p){ if (rec[p.name] && counts.hasOwnProperty(rec[p.name])) counts[rec[p.name]]++; });
-    $("c-present").textContent = counts.present;
-    $("c-late").textContent = counts.late;
-    $("c-absent").textContent = counts.absent;
-    var left = ALL.length - counts.present - counts.late - counts.absent;
-    $("unmarked").textContent = left > 0 ? left + " of " + ALL.length + " not marked yet" : "Everyone is marked";
-
-    var host = $("lists"); host.innerHTML = "";
-    var q = query.trim().toLowerCase(), shown = 0;
-    Object.keys(ROSTER).forEach(function(g){
-      var names = ROSTER[g].filter(function(n){ return !q || n.toLowerCase().indexOf(q) > -1; });
-      if (!names.length) return;
-      shown += names.length;
-      var marked = ROSTER[g].filter(function(n){ return rec[n]; }).length;
-      var head = document.createElement("div");
-      head.className = "head";
-      head.innerHTML = "<span>"+g+"</span><span>"+marked+" / "+ROSTER[g].length+"</span>";
-      var box = document.createElement("div"); box.className = "group";
-      names.forEach(function(n){
-        var st = rec[n] || "";
-        var row = document.createElement("div");
-        row.className = "row" + (st ? " s-" + st : "");
-
-        var c = document.createElement("button");
-        c.className = "check"; c.type = "button";
-        c.setAttribute("aria-label", locked ? "Locked attendance for " + n : "Mark " + n + " present");
-        c.disabled = locked;
-        c.style.opacity = locked ? ".45" : "1";
-        c.setAttribute("aria-pressed", st === "present" ? "true" : "false");
-        c.innerHTML = CHECK + (st === "late" ? "L" : st === "absent" ? "A" : "");
-        // tap circle: unmarked -> present, any marked -> clear
-        c.onclick = function(){ if (isLocked()) return; var d = day(); if (d[n]) delete d[n]; else d[n] = "present"; save(); render(); };
-
-        var nm = document.createElement("span"); nm.className = "name"; nm.textContent = n;
-
-        var pills = document.createElement("div"); pills.className = "pills";
-        ["late","absent"].forEach(function(k){
-          var b = document.createElement("button");
-          b.type = "button"; b.className = "pill " + k;
-          b.textContent = k === "late" ? "Late" : "Absent";
-          b.setAttribute("aria-pressed", st === k ? "true" : "false");
-          b.disabled = locked;
-          if (locked) b.style.opacity = ".45";
-          b.addEventListener("click", function(){ setStatus(n, k); });
-          pills.appendChild(b);
-        });
-
-        row.appendChild(c); row.appendChild(nm); row.appendChild(pills);
-        box.appendChild(row);
-      });
-      host.appendChild(head); host.appendChild(box);
-    });
-    if (!shown){
-      var e = document.createElement("div"); e.className = "group empty"; e.textContent = "No results"; host.appendChild(e);
-    }
-  }
-
-  function setDate(d){ current = d; $("date").value = d; render(); }
-  $("dayLock").addEventListener("click", function(){
-    var ds = current;
-    var wasLocked = isLocked(ds);
-    // Store explicit per-day override: false = unlocked, true = locked.
-    dayLocks[ds] = !wasLocked;
-    saveLocks();
-    updateLockUI();
-    render();
-    toast(wasLocked ? "Day manually unlocked" : "Day manually locked");
-  });
-  $("date").addEventListener("change", function(){ if (this.value) setDate(this.value); });
-  $("prev").addEventListener("click", function(){ setDate(shiftWeekday(current,-1)); });
-  $("next").addEventListener("click", function(){ setDate(shiftWeekday(current,1)); });
-  $("today").addEventListener("click", function(){ setDate(iso(new Date())); });
-  $("q").addEventListener("input", function(){ query = this.value; render(); });
-
-  var bulkStatuses = ["present", "absent", "late"];
-  var bulkLabels = {present:"Present", absent:"Absent", late:"Late"};
-  var bulkIndex = 0;
-  $("allPresent").addEventListener("click", function(){
-    if (isLocked()) { toast("This day is locked and read-only"); return; }
-    var status = bulkStatuses[bulkIndex];
-    var d = day();
-    ALL.forEach(function(p){ d[p.name] = status; });
-    save();
-    bulkIndex = (bulkIndex + 1) % bulkStatuses.length;
-    $("allPresent").textContent = "Set Everyone: " + bulkLabels[bulkStatuses[bulkIndex]];
-    render();
-  });
-  $("clearDay").addEventListener("click", function(){
-    if (isLocked()) { toast("This day is locked and read-only"); return; }
-    if (!records[current] || !Object.keys(records[current]).length) return;
-    if (!confirm("Clear all marks for " + current + "?")) return;
-    delete records[current]; save(); render();
-  });
-  $("export").addEventListener("click", function(){
-    // Compact attendance matrix for the currently selected month, similar to the class tracker:
-    // one row per student, one column per attendance date, then summary totals.
-    var monthKey = current.slice(0,7);
-    var dates = Object.keys(records).filter(function(d){
-      return d.slice(0,7) === monthKey && records[d] && Object.keys(records[d]).some(function(n){ return records[d][n]; });
-    }).sort();
-    var rows = [["Student Name"].concat(dates.map(function(d){ return String(Number(d.slice(8,10))); }), ["PRESENT","LATE","ABSENT"])];
-    ALL.forEach(function(p){
-      var counts = {present:0, late:0, absent:0};
-      var statuses = dates.map(function(d){
-        var st = (records[d] || {})[p.name] || "";
-        if (counts.hasOwnProperty(st)) counts[st]++;
-        return st ? st.toUpperCase() : "";
-      });
-      rows.push([p.name].concat(statuses, [counts.present, counts.late, counts.absent]));
-    });
-    var csv = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(","); }).join("\r\n");
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob(["\ufeff", csv], {type:"text/csv;charset=utf-8;"}));
-    a.download = "attendance-" + monthKey + ".csv";
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
-  });
-
-
-  $("exportImg").addEventListener("click", async function(){
-    try {
-    var rec = records[current] || {};
-    var groups = [
-      {k:"present", t:"Present", c:"#54D6BC"},
-      {k:"late", t:"Late", c:"#FFC36A"},
-      {k:"absent", t:"Absent", c:"#FF6489"},
-      {k:"", t:"Not marked", c:"#A5AEC9"}
-    ].map(function(g){
-      g.names = ALL.filter(function(p){ return (rec[p.name] || "") === g.k; }).map(function(p){ return p.name; });
-      return g;
-    }).filter(function(g){ return g.names.length || g.k === "present" || g.k === "absent"; });
-
-    var W = 1080, PAD = 56, GAP = 24, COLW = (W - PAD*2 - GAP) / 2, ROW = 38, FONT = '"SF Mono Custom",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace';
-    var H = 300;
-    groups.forEach(function(g){ H += 70 + Math.max(1, Math.ceil(g.names.length / 2)) * ROW + 24; });
-    H += 46;
-
-    var cv = document.createElement("canvas"), SC = 2;
-    cv.width = W * SC; cv.height = H * SC;
-    var x = cv.getContext("2d"); x.scale(SC, SC);
-    /* Wait for the bundled website fonts before drawing canvas text. */
-    if (document.fonts && document.fonts.load) {
-      try {
-        await Promise.all([
-          document.fonts.load("700 48px \"SF Mono Custom\""),
-          document.fonts.load("400 20px \"SF Mono Custom\""),
-          document.fonts.load("500 23px \"SF Mono Custom\"")
-        ]);
-        await document.fonts.ready;
-      } catch (fontErr) {
-        /* If local fonts are unavailable, continue with the system monospace fallback. */
-      }
-    }
-    var bg = x.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, "#210b2d"); bg.addColorStop(.28, "#171b42"); bg.addColorStop(.62, "#101d35"); bg.addColorStop(1, "#071c2b");
-    x.fillStyle = bg; x.fillRect(0, 0, W, H);
-    function glow(cx, cy, r, color){ var gr=x.createRadialGradient(cx,cy,0,cx,cy,r); gr.addColorStop(0,color); gr.addColorStop(1,"rgba(0,0,0,0)"); x.fillStyle=gr; x.fillRect(0,0,W,H); }
-    glow(110, 80, 440, "rgba(190,43,147,.38)"); glow(920, 80, 420, "rgba(255,116,65,.23)"); glow(920, H-100, 470, "rgba(40,133,232,.29)"); glow(320, H*.68, 390, "rgba(111,57,222,.27)");
-
-    function rr(px, py, w, h, r){ r=Math.max(0,Math.min(r,w/2,h/2)); x.beginPath(); if (typeof x.roundRect === "function") { x.roundRect(px,py,w,h,r); } else { x.moveTo(px+r,py); x.arcTo(px+w,py,px+w,py+h,r); x.arcTo(px+w,py+h,px,py+h,r); x.arcTo(px,py+h,px,py,r); x.arcTo(px,py,px+w,py,r); x.closePath(); } }
-    function glass(px,py,w,h,r){
-      rr(px,py,w,h,r); x.fillStyle="rgba(210,220,255,.105)"; x.fill();
-      x.save(); x.clip(); var gl=x.createLinearGradient(px,py,px+w,py+h); gl.addColorStop(0,"rgba(255,255,255,.16)"); gl.addColorStop(.45,"rgba(255,255,255,.025)"); gl.addColorStop(1,"rgba(160,195,255,.075)"); x.fillStyle=gl; x.fillRect(px,py,w,h); x.restore();
-      rr(px,py,w,h,r); x.strokeStyle="rgba(226,233,255,.34)"; x.lineWidth=1.2; x.stroke();
-      x.save(); x.beginPath(); x.moveTo(px+r,py+1); x.lineTo(px+w-r,py+1); x.strokeStyle="rgba(255,255,255,.34)"; x.lineWidth=1; x.stroke(); x.restore();
-    }
-    function fit(t, w){ if (x.measureText(t).width <= w) return t; while (t.length > 1 && x.measureText(t + "…").width > w) t = t.slice(0, -1); return t + "…"; }
-    var p = current.split("-"), dt = new Date(+p[0], +p[1]-1, +p[2]);
-    x.textBaseline="alphabetic";
-    glass(PAD, 36, W-PAD*2, 146, 28);
-    x.fillStyle="#F8F8FF"; x.font="700 48px " + FONT; x.fillText("Attendance", PAD+30, 99);
-    x.fillStyle="rgba(238,241,255,.78)"; x.font="400 23px " + FONT; x.fillText("11-ACAD D-1AM · 2026–2027", PAD+32, 137);
-    x.fillStyle="rgba(235,239,255,.76)"; x.font="400 20px " + FONT;
-    x.fillText(dt.toLocaleDateString(undefined, {weekday:"long", year:"numeric", month:"long", day:"numeric"}), PAD+32, 160);
-    var stats = [["Present","#54D6BC","present"],["Late","#FFC36A","late"],["Absent","#FF6489","absent"]];
-    var sw=(W-PAD*2-48)/3, sy=198;
-    stats.forEach(function(st,i){ var sx=PAD+i*(sw+16); glass(sx,sy,sw,74,16); var n=ALL.filter(function(q){return rec[q.name]===st[2];}).length; x.fillStyle=st[1]; x.beginPath(); x.arc(sx+19,sy+25,4.5,0,Math.PI*2); x.fill(); x.fillStyle="rgba(244,246,255,.84)"; x.font="400 17px "+FONT; x.fillText(st[0],sx+31,sy+30); x.fillStyle="#FFFFFF"; x.font="700 29px "+FONT; x.fillText(String(n),sx+18,sy+60); });
-
-    var y = 294;
-    groups.forEach(function(g){
-      var rows = Math.max(1, Math.ceil(g.names.length / 2)), bh = rows * ROW + 24;
-      x.fillStyle = g.c; x.font = "700 25px " + FONT; x.fillText(g.t, PAD + 4, y + 30);
-      x.fillStyle = "rgba(234,239,255,.66)"; x.font = "400 20px " + FONT; x.fillText(String(g.names.length), PAD + 4 + x.measureText(g.t).width + 18, y + 30);
-      y += 44;
-      glass(PAD, y, W-PAD*2, bh, 19);
-      x.font = "400 20px " + FONT;
-      if (!g.names.length){ x.fillStyle = "rgba(234,239,255,.62)"; x.fillText("None", PAD + 28, y + 40); }
-      g.names.forEach(function(n, i){
-        var col = i % 2, row = Math.floor(i / 2);
-        var tx = PAD + 28 + col * (COLW + GAP/2), ty = y + 15 + row * ROW + 24;
-        x.fillStyle = "rgba(255,255,255,.92)"; x.fillText(fit(n, COLW - 42), tx, ty);
-        x.beginPath(); x.arc(tx-11,ty-6,3,0,Math.PI*2); x.fillStyle=g.c; x.fill();
-      });
-      y += bh + 10;
-    });
-    x.fillStyle="rgba(220,230,255,.65)"; x.font="400 15px "+FONT;
-    x.fillText("11-ACAD D-1AM · 2026–2027", PAD+4, H-22);
-    x.textAlign="right"; x.fillText("Generated " + new Date().toLocaleString(), W-PAD, H-22); x.textAlign="left";
-
-    var filename = "attendance-" + current + ".jpg";
-    function downloadBlob(blob){
-      if (!blob) throw new Error("The image could not be created. Please try again.");
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      a.href = url; a.download = filename; a.style.display = "none";
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
-    }
-    var blob = await new Promise(function(resolve){
-      try { cv.toBlob(resolve, "image/jpeg", 0.88); } catch (e) { resolve(null); }
-    });
-    if (!blob && cv.toDataURL) {
-      var data = cv.toDataURL("image/jpeg", 0.88);
-      var raw = atob(data.split(",")[1]), bytes = new Uint8Array(raw.length);
-      for (var bi=0; bi<raw.length; bi++) bytes[bi] = raw.charCodeAt(bi);
-      blob = new Blob([bytes], {type:"image/jpeg"});
-    }
-    if (!blob) throw new Error("Your browser could not render the JPEG image.");
-    /* Prefer a direct download for consistent behavior across desktop and mobile browsers. */
-    downloadBlob(blob);
-    toast("Attendance JPEG exported");
-    } catch (err) {
-      console.error("Attendance image export failed:", err);
-      toast("Image export failed: " + (err && err.message ? err.message : "Please reload the page and try again."));
-    }
-  });
-
-
-  var toastT;
-  function toast(msg){
-    var t = $("toast"); t.textContent = msg; t.classList.add("show");
-    clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove("show"); }, 4200);
-  }
-  function getUrl(){ try { return localStorage.getItem("attendance-sync-url") || SYNC_URL; } catch (e) { return SYNC_URL; } }
-  function setUrl(u){ try { localStorage.setItem("attendance-sync-url", u); } catch (e) {} }
-  // Set the provided web app URL as the default for existing users once.
-  try {
-    if (localStorage.getItem("attendance-sync-default-v3") !== "1") {
-      localStorage.setItem("attendance-sync-url", SYNC_URL);
-      localStorage.setItem("attendance-sync-default-v3", "1");
-    }
-  } catch (e) {}
-  function askUrl(){
-    var u = prompt("Paste your Apps Script web app link (ends in /exec):", getUrl());
-    if (u && /^https:\/\//.test(u.trim())){ setUrl(u.trim()); return u.trim(); }
-    return "";
-  }
-  function syncCurrentDay(requireConfirmation, isAutomatic){
-    var rec = records[current] || {};
-    var list = ALL.filter(function(p){ return rec[p.name]; }).map(function(p){ return {name:p.name, status:rec[p.name]}; });
-    if (!list.length){
-      if (!isAutomatic) toast("Nothing is marked for this day yet");
-      return;
-    }
-    var url = getUrl() || askUrl();
-    if (!url) return;
-    if (requireConfirmation) {
-      var warning = (isAutomatic ? "AUTO-SYNC WARNING: " : "WARNING: ") +
-        "Attendance for " + current + " will be sent to Google Sheets. This may update existing entries for that date. " +
-        "Check that the date and attendance marks are correct before continuing. Continue?";
-      if (!window.confirm(warning)) {
-        if (isAutomatic) toast("Automatic Google Sheets sync cancelled");
-        return;
-      }
-    }
-    var btn = $("sync");
-    btn.textContent = "Saving…"; btn.disabled = true;
-    fetch(url, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({date:current, records:list})})
-      .then(function(r){ return r.json(); })
-      .then(function(res){
-        if (!res.ok) throw new Error(res.error || "Sync failed");
-        var m = "Saved " + res.written + " names to Google Sheets: " + res.tab + ", column " + res.column;
-        if (res.unmatched && res.unmatched.length) m += ". Not found in sheet: " + res.unmatched.join("; ");
-        toast(m);
-      })
-      .catch(function(err){ toast("Could not sync. " + (err && err.message ? err.message : "Check the sync link.")); })
-      .then(function(){ btn.textContent = "Save to Google Sheets"; btn.disabled = false; });
-  }
-
-  // Pull the spreadsheet as the source of truth. JSONP avoids browser CORS issues with Apps Script.
-  var cloudPullInProgress = false;
-  function pullFromGoogleSheet(showToast){
-    if (cloudPullInProgress) return;
-    var base = getUrl();
-    if (!base) return;
-    cloudPullInProgress = true;
-    var callbackName = "__attendanceSheetRead_" + Date.now() + "_" + Math.floor(Math.random()*100000);
-    var script = document.createElement("script");
-    var finished = false;
-    var timeout = window.setTimeout(function(){ finish(new Error("Google Sheets read timed out")); }, 15000);
-    function finish(err, payload){
-      if (finished) return;
-      finished = true;
-      window.clearTimeout(timeout);
-      try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
-      if (script.parentNode) script.parentNode.removeChild(script);
-      cloudPullInProgress = false;
-      if (err) { if (showToast) toast("Could not load Google Sheets: " + err.message); return; }
-      if (!payload || payload.ok !== true || !payload.history || typeof payload.history !== "object") {
-        if (showToast) toast((payload && payload.error) || "Google Sheets read endpoint is not configured yet");
-        return;
-      }
-      function normalizeSheetName(name){ return String(name || "").toLowerCase().replace(/[^a-z0-9\u00f1]/g, ""); }
-      var validNames = {};
-      ALL.forEach(function(person){ validNames[normalizeSheetName(person.name)] = person.name; });
-      var changed = false;
-      Object.keys(payload.history).forEach(function(ds){
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(ds)) return;
-        var incoming = payload.history[ds] || {};
-        var next = {};
-        Object.keys(incoming).forEach(function(name){
-          var canonicalName = validNames[normalizeSheetName(name)];
-          if (!canonicalName) return;
-          var status = String(incoming[name] || "").trim().toLowerCase();
-          if (["present","late","absent"].indexOf(status) !== -1) next[canonicalName] = status;
-        });
-        var old = records[ds] || {};
-        var oldComparable = {};
-        Object.keys(old).forEach(function(name){
-          var canonicalName = validNames[normalizeSheetName(name)];
-          if (canonicalName) oldComparable[canonicalName] = old[name];
-        });
-        if (JSON.stringify(oldComparable) !== JSON.stringify(next)) changed = true;
-        // Spreadsheet is authoritative for dates returned by the read endpoint.
-        records[ds] = next;
-      });
-      if (changed) { save(); render(); }
-      if (showToast) toast("Attendance refreshed from Google Sheets");
-    }
-    window[callbackName] = function(payload){ finish(null, payload); };
-    script.onerror = function(){ finish(new Error("Could not access the Apps Script read endpoint")); };
-    script.src = base + (base.indexOf("?") >= 0 ? "&" : "?") + "action=readAll&callback=" + encodeURIComponent(callbackName) + "&_=" + Date.now();
-    document.head.appendChild(script);
-  }
-
-  $("sync").addEventListener("click", function(){ syncCurrentDay(true, false); });
-  // Refresh from Google Sheets only when the website is first opened/reloaded.
-  // No background polling: this prevents cloud data from overwriting in-progress edits.
-  pullFromGoogleSheet(false);
-
-  window.addEventListener("scroll", function(){ $("nav").classList.toggle("scrolled", window.scrollY > 4); }, {passive:true});
-  var lastLockState = isLocked();
-  window.setInterval(function(){
-    var nextLockState = isLocked();
-    if (nextLockState !== lastLockState) { lastLockState = nextLockState; render(); }
-    else if (isAutoLocked()) updateLockUI();
-  }, 15000);
-  render();
-
-})();
-</script>
 </body>
 </html>
