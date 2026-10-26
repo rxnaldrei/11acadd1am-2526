@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>11 ACAD D1 - Edit Cleaners</title>
+<style>
+@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Medium.otf") format("opentype");font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Bold.otf") format("opentype");font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Heavy.otf") format("opentype");font-style:normal;font-weight:800;font-display:swap}
+@font-face{font-family:"SF Pro Text";src:url("SF-Pro-Text-Black.otf") format("opentype");font-style:normal;font-weight:900;font-display:swap}
+@font-face{font-family:"Commuters Sans Bold";src:url("commuterssans-bold.otf") format("opentype");font-style:normal;font-weight:700;font-display:swap}
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF; --label:#000000; --label2:rgba(60,60,67,.6); --sep:rgba(60,60,67,.18);
+  --fill:rgba(120,120,128,.12); --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30;
+  --blur:rgba(242,242,247,.78); color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#000000; --card:#1C1C1E; --label:#FFFFFF; --label2:rgba(235,235,245,.6); --sep:rgba(84,84,88,.6);
+    --fill:rgba(120,120,128,.24); --blue:#0A84FF; --green:#30D158; --orange:#FF9F0A; --red:#FF453A;
+    --blur:rgba(0,0,0,.72); color-scheme:dark;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);min-height:100%;}
+body{margin:0;position:relative;isolation:isolate;background:transparent;color:var(--label);
+  font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-weight:500;
+  font-size:17px;line-height:1.3;-webkit-font-smoothing:antialiased}
+/* Use Commuters Sans only for the class/year label. */
+.class-title{font-family:"Commuters Sans Bold","SF Pro Text",sans-serif!important;font-weight:700!important}
+
+  /* Blurred aurora confined to the top of the viewport, fading into a dark base beneath it */
+  html { background: #05060a; }
+  body::before { content: ""; position: fixed; z-index: -2; inset: 0; pointer-events: none; background: #05060a; }
+  body::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    left: -22%;
+    right: -22%;
+    top: -22%;
+    height: 85vh;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 15% 16%, rgba(111,20,63,.78) 0%, rgba(111,20,63,0) 42%),
+      radial-gradient(ellipse at 79% 18%, rgba(112,65,31,.72) 0%, rgba(112,65,31,0) 39%),
+      radial-gradient(ellipse at 18% 78%, rgba(43,23,112,.88) 0%, rgba(43,23,112,0) 43%),
+      radial-gradient(ellipse at 78% 78%, rgba(12,49,72,.82) 0%, rgba(12,49,72,0) 42%),
+      radial-gradient(ellipse at 49% 45%, rgba(63,22,64,.38) 0%, rgba(63,22,64,0) 45%),
+      linear-gradient(145deg, #21101d 0%, #151022 48%, #081722 100%);
+    background-size: 145% 145%;
+    background-position: 50% 30%;
+    filter: blur(62px) saturate(125%);
+    opacity: .96;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 92%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 92%);
+    transform: translate3d(0,0,0);
+    animation: auroraDrift 22s ease-in-out infinite alternate;
+  }
+  /* Driven purely by transform (no background-position) so the browser only
+     has to recomposite an already-blurred layer each frame, not re-blur it. */
+  @keyframes auroraDrift {
+    0% { transform: translate3d(-3%,1%,0) scale(1.05); }
+    35% { transform: translate3d(3%,-1.5%,0) scale(1.12); }
+    70% { transform: translate3d(-1.5%,2%,0) scale(1.08); }
+    100% { transform: translate3d(2.5%,-0.5%,0) scale(1.14); }
+  }
+
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 55%,transparent);outline-offset:2px}
+
+.nav{position:sticky;top:0;z-index:5;padding:env(safe-area-inset-top,0px) 0 0;
+  background:linear-gradient(135deg,rgba(255,255,255,.56),rgba(255,255,255,.24) 48%,rgba(255,255,255,.12)),rgba(245,248,255,.18);
+  -webkit-backdrop-filter:saturate(220%) blur(34px);backdrop-filter:saturate(220%) blur(34px);
+  border-bottom:1px solid rgba(255,255,255,.72);box-shadow:0 1px 0 rgba(255,255,255,.72) inset,0 12px 38px rgba(40,60,110,.12);transition:border-color .2s}
+.nav.scrolled{border-bottom-color:var(--sep)}
+.wrap{max-width:680px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-right,0px))}
+.nav .wrap{padding-top:10px;padding-bottom:10px}
+h1{margin:0;font-size:clamp(25px,6vw,34px);font-weight:700;letter-spacing:-.8px;line-height:1.12}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.title-stack{min-width:0;display:flex;flex-direction:column;gap:5px}
+.subtitle{font-size:11px;font-weight:600;letter-spacing:.65px;text-transform:uppercase;color:var(--label2);line-height:1.3}
+.lock-btn{flex:none;width:38px;height:38px;padding:0;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.28);color:var(--label);border:1px solid rgba(255,255,255,.52);box-shadow:0 1px 2px rgba(0,0,0,.04),0 1px 0 rgba(255,255,255,.65) inset;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:background .15s,transform .15s}
+.lock-btn svg{width:19px;height:19px;display:block}
+.lock-btn:active{background:var(--fill);transform:scale(.94)}
+.lock-btn:disabled{opacity:.55;cursor:default}
+.readonly-note{margin:8px 0 12px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--orange) 12%,transparent);border:1px solid color-mix(in srgb,var(--orange) 20%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--label);font-size:14px}
+.thursday-notice{display:flex;align-items:flex-start;gap:10px;margin:12px 0;padding:13px 15px;border-radius:16px;background:color-mix(in srgb,var(--orange) 13%,transparent);border:1px solid color-mix(in srgb,var(--orange) 27%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--label);font-size:14px;line-height:1.45}
+.thursday-notice[hidden]{display:none}
+.thursday-notice .notice-icon{flex:0 0 auto;font-size:17px;line-height:1.3}
+.thursday-notice strong{display:block;margin-bottom:2px;font-weight:700}
+.search{margin-top:12px;display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(255,255,255,.50),rgba(255,255,255,.20));border:1px solid rgba(255,255,255,.72);border-radius:16px;padding:9px 12px;box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 5px 18px rgba(50,70,120,.06);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px)}
+.search svg{flex:none;width:16px;height:16px;opacity:.6}
+.search input{flex:1;min-width:0;border:0;background:none;outline:0;font-size:17px}
+.search input::placeholder{color:var(--label2)}
+
+main{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
+.group{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.24) 55%,rgba(255,255,255,.17));border:1px solid rgba(255,255,255,.78);border-radius:22px;overflow:hidden;margin:0 0 12px;box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 -1px 0 rgba(255,255,255,.18) inset,0 12px 34px rgba(40,55,100,.12);-webkit-backdrop-filter:saturate(210%) blur(28px);backdrop-filter:saturate(210%) blur(28px)}
+.head{margin:24px 16px 7px;font-size:13px;color:var(--label2);text-transform:uppercase;letter-spacing:-.08px;display:flex;justify-content:space-between}
+.foot{margin:7px 16px 0;font-size:13px;color:var(--label2)}
+
+.row{display:flex;align-items:center;gap:12px;min-height:44px;padding:8px 16px;position:relative}
+.row+.row::before{content:"";position:absolute;top:0;left:56px;right:0;height:.5px;background:var(--sep)}
+.date-row{justify-content:center}
+.date-row input{background:rgba(120,120,128,.10);border:1px solid rgba(255,255,255,.48);border-radius:11px;padding:6px 10px;font-size:17px;min-width:0}
+.chev{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--blue);font-size:22px;line-height:1}
+.chev:active{background:var(--fill)}
+.date-row .mid{display:flex;align-items:center;gap:4px;flex:1;justify-content:center}
+.today{color:var(--blue);font-size:17px;padding:6px 8px;border-radius:8px}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr)}
+.stat{padding:14px 8px;text-align:center}
+.stat+.stat{border-left:.5px solid var(--sep)}
+.stat b{display:block;font-size:28px;font-weight:700;letter-spacing:.36px}
+.stat span{font-size:13px;color:var(--label2)}
+.stat.p b{color:var(--green)} .stat.l b{color:var(--orange)} .stat.a b{color:var(--red)} .stat.e b{color:var(--blue)}
+
+.check{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--label2);display:grid;place-items:center;
+  color:#fff;font-size:14px;font-weight:700;transition:background .15s,border-color .15s,transform .15s}
+.check:active{transform:scale(.88)}
+.check svg{width:15px;height:15px;display:none}
+.s-present .check{background:var(--green);border-color:var(--green)}
+.s-present .check svg{display:block}
+.s-late .check{background:var(--orange);border-color:var(--orange)}
+.s-absent .check{background:var(--red);border-color:var(--red)}
+.name{flex:1;min-width:0;font-size:16px;overflow-wrap:anywhere}
+.s-absent .name{color:var(--label2)}
+.pills{display:flex;gap:6px;flex:none}
+.pill{padding:5px 11px;border-radius:999px;background:var(--fill);font-size:14px;font-weight:500;color:var(--label2);transition:background .15s,color .15s}
+.pill.late[aria-pressed=true]{background:var(--orange);color:#fff}
+.pill.absent[aria-pressed=true]{background:var(--red);color:#fff}
+.days{max-height:340px;overflow-y:scroll;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--label2) transparent}
+/* Override .group and .liquidGlass overflow:hidden so All Days can actually scroll. */
+.group.days.liquidGlass{max-height:340px;overflow-y:scroll!important;overflow-x:hidden!important;scrollbar-gutter:stable;scrollbar-width:auto;scrollbar-color:var(--label2) rgba(120,120,128,.12)}
+.group.days.liquidGlass::-webkit-scrollbar{width:10px}
+.group.days.liquidGlass::-webkit-scrollbar-track{background:rgba(120,120,128,.12);border-radius:999px}
+.group.days.liquidGlass::-webkit-scrollbar-thumb{background:var(--label2);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
+.group.days.liquidGlass::-webkit-scrollbar-thumb:hover{background:var(--label);border:2px solid transparent;background-clip:padding-box}
+.days::-webkit-scrollbar{width:8px}
+.days::-webkit-scrollbar-track{background:transparent}
+.days::-webkit-scrollbar-thumb{background:var(--label2);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
+.days::-webkit-scrollbar-thumb:hover{background:var(--label);border:2px solid transparent;background-clip:padding-box}
+.day-row{width:100%;text-align:left;display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 16px;position:relative}
+.day-row+.day-row::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
+.day-row:active{background:var(--fill)}
+.day-row.sel{background:var(--fill)}
+.day-row .dn{flex:1;min-width:0}
+.day-row .dn small{display:block;font-size:13px;color:var(--label2)}
+.day-row .dc{display:flex;gap:10px;font-size:15px;font-weight:600}
+.day-row .dc .p{color:var(--green)} .day-row .dc .l{color:var(--orange)} .day-row .dc .a{color:var(--red)} .day-row .dc .e{color:var(--blue)}
+.day-row .none{font-size:14px;font-weight:400;color:var(--label2)}
+.empty{padding:18px 16px;color:var(--label2);text-align:center}
+
+.action{width:100%;text-align:left;padding:11px 16px;font-size:17px;color:var(--blue);display:block;min-height:44px;position:relative}
+.action+.action::before{content:"";position:absolute;top:0;left:16px;right:0;height:.5px;background:var(--sep)}
+.action:active{background:var(--fill)}
+.action.danger{color:var(--red)}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);max-width:min(92vw,420px);
+  background:rgba(40,40,42,.82);border:1px solid rgba(255,255,255,.22);box-shadow:0 12px 36px rgba(0,0,0,.18),0 1px 0 rgba(255,255,255,.16) inset;color:#fff;padding:12px 18px;border-radius:20px;font-size:15px;text-align:center;opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;-webkit-backdrop-filter:saturate(180%) blur(28px);backdrop-filter:saturate(180%) blur(28px);z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-color-scheme:dark){
+  .nav{background:linear-gradient(135deg,rgba(35,39,52,.66),rgba(25,27,38,.38) 55%,rgba(18,20,30,.30));border-bottom-color:rgba(255,255,255,.24);box-shadow:0 1px 0 rgba(255,255,255,.20) inset,0 12px 38px rgba(0,0,0,.20);-webkit-backdrop-filter:saturate(200%) blur(36px);backdrop-filter:saturate(200%) blur(36px)}
+  .group{background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.055) 60%,rgba(255,255,255,.09));border-color:rgba(255,255,255,.24);box-shadow:0 1px 0 rgba(255,255,255,.26) inset,0 -1px 0 rgba(255,255,255,.05) inset,0 14px 36px rgba(0,0,0,.22);-webkit-backdrop-filter:saturate(190%) blur(30px);backdrop-filter:saturate(190%) blur(30px)}
+  .lock-btn{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);box-shadow:0 1px 0 rgba(255,255,255,.08) inset}
+  .search{background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.055));border-color:rgba(255,255,255,.24);box-shadow:0 1px 0 rgba(255,255,255,.20) inset,0 8px 24px rgba(0,0,0,.10)}
+  .date-row input{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+}
+@media (max-width:480px){.pills{gap:4px}.pill{padding:5px 8px;font-size:13px}.stat b{font-size:24px}}
+@media (max-width:380px){.pill{padding:5px 6px;font-size:12px}.row{gap:10px;padding:8px 12px}.row+.row::before{left:50px}}
+
+
+/* Integrated Liquid-Glass-CSS-inspired refraction layer (local, no CDN required) */
+.liquidGlass{position:relative;isolation:isolate;overflow:hidden;}
+.liquidGlass::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);filter:url(#liquidGlassFilter2);opacity:.42;}
+.liquidGlass::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.015) 55%,rgba(255,255,255,.055));box-shadow:inset 1px 1px 2px rgba(255,255,255,.42),inset -1px -2px 3px rgba(20,20,30,.16);}
+.liquidGlass>*{position:relative;z-index:1;}
+.nav.liquidGlass::before{opacity:.28;backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%)}
+.group.liquidGlass::before{opacity:.48;backdrop-filter:blur(7px) saturate(155%);-webkit-backdrop-filter:blur(7px) saturate(155%)}
+button.liquidGlass{overflow:hidden;}
+button.liquidGlass::before,button.liquidGlass::after{border-radius:inherit;}
+@media(prefers-reduced-transparency:reduce){.liquidGlass::before{filter:none;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:.2}}
+
+
+/* Minimal frosted-glass finish: blur only, no refraction, shine, or glossy gradients. */
+.liquidGlass{isolation:auto!important;}
+.liquidGlass::before,.liquidGlass::after{content:none!important;display:none!important;filter:none!important;}
+.liquidGlass>*{position:static;z-index:auto;}
+.nav,.nav.liquidGlass{background:rgba(245,247,252,.60)!important;border-bottom:1px solid rgba(255,255,255,.22)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(24px)!important;backdrop-filter:blur(24px)!important;}
+.group,.group.liquidGlass{background:rgba(245,247,252,.43)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(22px)!important;backdrop-filter:blur(22px)!important;}
+.search,.search.liquidGlass{background:rgba(245,247,252,.38)!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important;}
+.lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:rgba(245,247,252,.28)!important;border:1px solid rgba(255,255,255,.20)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;}
+.toast{box-shadow:none!important;-webkit-backdrop-filter:blur(22px)!important;backdrop-filter:blur(22px)!important;}
+@media(prefers-color-scheme:dark){
+ .nav,.nav.liquidGlass{background:rgba(22,24,35,.58)!important;border-bottom-color:rgba(255,255,255,.12)!important;}
+ .group,.group.liquidGlass{background:rgba(22,24,35,.48)!important;border-color:rgba(255,255,255,.12)!important;}
+ .search,.search.liquidGlass{background:rgba(22,24,35,.40)!important;border-color:rgba(255,255,255,.12)!important;}
+ .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.12)!important;}
+}
+
+/* Mobile perf: many stacked backdrop-filter layers are costly to composite/repaint on phones.
+   Keep blur only on the sticky nav (the one surface that needs to read over moving content);
+   everything else gets a solid-enough background instead, which is nearly free to render. */
+@media (max-width:700px){
+  .group,.group.liquidGlass,.search,.search.liquidGlass,
+  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass,
+  .toast{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}
+  .group,.group.liquidGlass{background:#1c1d24!important;border-color:rgba(255,255,255,.10)!important;}
+  .search,.search.liquidGlass{background:#23242c!important;border-color:rgba(255,255,255,.10)!important;}
+  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:#2a2b34!important;border-color:rgba(255,255,255,.10)!important;}
+  .toast{background:#23242c!important;}
+}
+@media (max-width:700px) and (prefers-color-scheme:light){
+  .group,.group.liquidGlass{background:#eef0f5!important;border-color:rgba(0,0,0,.06)!important;}
+  .search,.search.liquidGlass{background:#e6e9ef!important;border-color:rgba(0,0,0,.06)!important;}
+  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass{background:#e2e5ec!important;border-color:rgba(0,0,0,.06)!important;}
+  .toast{background:#e6e9ef!important;}
+}
+
+/* Desktop compact two-column workspace: roster and calendar left, controls right. */
+@media (min-width: 900px){
+  .nav .wrap{max-width:1600px;padding-left:28px;padding-right:28px}
+  main.wrap{max-width:1600px;width:100%;padding:18px 28px 48px}
+  .desktop-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,350px);gap:20px;align-items:start}
+  .desktop-left,.desktop-right{min-width:0}
+  .desktop-left #lists{min-width:0}
+  .desktop-left .group{margin-bottom:12px}
+  .desktop-right .head{margin:2px 4px 7px}
+  .desktop-right .group{margin-bottom:12px}
+  .desktop-right .foot{margin:0 4px 16px;line-height:1.4}
+  .desktop-right .thursday-notice{margin:0 0 12px}
+  .desktop-right .stats{margin-bottom:12px}
+  .desktop-right .readonly-note{margin:0 0 12px}
+  .desktop-right .date-panel{margin-top:0!important}
+  .desktop-right .actions-panel{margin-top:0}
+  .desktop-right .action{padding:10px 14px;font-size:15px;min-height:42px}
+  .desktop-right .action+.action::before{left:14px}
+  .desktop-left .head{margin:16px 4px 7px}
+  .desktop-left .days{max-height:360px}
+}
+@media (max-width:899px){
+  .desktop-columns,.desktop-left,.desktop-right{display:contents}
+  main.wrap{display:flex;flex-direction:column}
+  .desktop-date{order:1}.desktop-actions-head{order:2}.desktop-actions{order:3}
+  .desktop-sync-foot{order:4}.desktop-notice{order:5}.desktop-stats{order:6}
+  #unmarked{order:7}.desktop-readonly{order:8}#lists{order:9}
+  .desktop-days-head{order:10}#days{order:11}.desktop-days-foot{order:12}
+}
+
+
+/* Extra mobile scroll optimization: avoid repainting large blurred/fixed layers while scrolling. */
+@media (max-width:700px){
+  html,body{overscroll-behavior-y:auto;}
+  .nav,.nav.liquidGlass{
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    background:rgba(22,24,35,.92)!important;box-shadow:none!important;
+    transition:none!important;
+  }
+  .group,.group.liquidGlass,.search,.search.liquidGlass,
+  .lock-btn,.lock-btn.liquidGlass,.chev.liquidGlass,.today.liquidGlass,.action.liquidGlass,
+  .toast{
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    box-shadow:none!important;
+  }
+  .group,.group.liquidGlass{contain:layout paint;}
+  .nav .wrap{transform:none!important;}
+  *{scroll-behavior:auto!important;}
+}
+@media (max-width:700px) and (prefers-color-scheme:light){
+  .nav,.nav.liquidGlass{background:rgba(28,29,36,.92)!important;}
+}
+
+
+/* Keep the login screen fully inside the mobile viewport and hide page scrollbars. */
+html:has(#password-gate:not(.is-unlocking)),
+body:has(#password-gate:not(.is-unlocking)) {
+  overflow: hidden !important;
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+}
+html:has(#password-gate:not(.is-unlocking))::-webkit-scrollbar,
+body:has(#password-gate:not(.is-unlocking))::-webkit-scrollbar,
+#password-gate::-webkit-scrollbar,
+#password-gate .gate-card::-webkit-scrollbar { display: none; }
+#password-gate {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  box-sizing: border-box;
+  overflow: hidden;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+}
+#password-gate .gate-card {
+  max-height: calc(100% - 8px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+@media (max-width: 700px) {
+  #password-gate { padding: max(12px, env(safe-area-inset-top)) 14px max(12px, env(safe-area-inset-bottom)); }
+  #password-gate .gate-card {
+    width: min(100%, 420px);
+    max-height: calc(100% - 4px);
+    padding: clamp(18px, 5vw, 24px);
+    border-radius: 20px;
+  }
+  #password-gate .gate-mark { margin-bottom: 14px; }
+  #password-gate h2 { font-size: clamp(24px, 7vw, 30px); }
+  #password-gate .gate-subtitle { margin-bottom: 12px; }
+  #password-gate p { margin-bottom: 12px; }
+  #password-gate input { padding: 12px 14px; }
+  #password-gate button { margin-top: 10px; padding: 12px 16px; }
+}
+
+
+/* Compact the desktop right column: remove excess gaps between controls and panels. */
+@media (min-width:900px){
+  .desktop-columns{column-gap:16px;grid-template-columns:minmax(0,1fr) minmax(280px,320px)}
+  .desktop-right{display:flex;flex-direction:column;gap:8px}
+  .desktop-right .head,
+  .desktop-right .group,
+  .desktop-right .foot,
+  .desktop-right .thursday-notice,
+  .desktop-right .readonly-note{margin-top:0!important;margin-bottom:0!important}
+  .desktop-right .actions-panel{margin:0!important}
+  .desktop-right .action{padding-top:8px;padding-bottom:8px;min-height:38px;line-height:1.25}
+  .desktop-right .stats{margin:0!important}
+  .desktop-right .stat{padding:10px 6px}
+  .desktop-right .stat b{font-size:25px}
+  .desktop-right .foot{line-height:1.3}
+}
+
+
+/* Keep the page shell and all mobile-width content inside the viewport. */
+@media (max-width:899px){
+  html,body,#protected-app{width:100%;max-width:100%;overflow-x:hidden!important;}
+  .wrap,.nav .wrap,main.wrap{width:100%;max-width:100%;min-width:0;margin-left:auto;margin-right:auto;}
+  .wrap{padding-left:16px;padding-right:16px;}
+  .nav .wrap{padding-left:16px;padding-right:16px;}
+  main.wrap{padding:16px 16px 48px;}
+  .desktop-columns,.desktop-left,.desktop-right{min-width:0;max-width:100%;}
+  .group,.search,.titlebar{width:100%;min-width:0;}
+}
+</style>
+
+<style>
+.cleaners-main{padding-bottom:48px}.cleaner-days{display:grid;gap:12px;margin-top:14px}.cleaner-day{overflow:hidden}.cleaner-list{padding:4px 16px 12px}.cleaner-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 4px;border-top:1px solid rgba(255,255,255,.075);min-width:0}.cleaner-name{font-weight:600;letter-spacing:.15px}.cleaner-check{width:21px;height:21px;flex:none;accent-color:var(--blue,#0a84ff);cursor:pointer}.cleaner-empty{padding:18px 16px;color:var(--label2);text-align:center}.cleaners-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px}.cleaners-actions .action{min-width:0;border-radius:12px!important;overflow:hidden;padding:11px 14px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stats .stat{min-width:0}.stats .stat b{font-size:clamp(18px,3vw,25px)}.stats .stat span{font-size:11px}@media(max-width:600px){.cleaners-actions{grid-template-columns:1fr}.cleaners-actions .action{width:100%;border-radius:12px!important}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cleaner-list{padding:0 12px 10px}.cleaner-row{padding:11px 2px}.cleaner-name{font-size:14px}}
+
+/* Cleaners layout: compact roster on the left and controls on the right on desktop. */
+.cleaners-main{max-width:1500px!important;width:100%}
+.desktop-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,340px);gap:20px;align-items:start}
+.desktop-left,.desktop-right{min-width:0}
+.desktop-right{display:flex;flex-direction:column;gap:10px}
+.desktop-right .group,.desktop-right .head,.desktop-right .foot{margin-top:0!important;margin-bottom:0!important}
+.desktop-right .date-row{justify-content:space-between;gap:6px;padding:8px 10px}
+.desktop-right .date-row .mid{min-width:0;flex:1}
+.desktop-right .date-row input{width:100%;font-size:15px;padding:7px 5px}
+.desktop-right .today{font-size:14px;white-space:nowrap}
+.desktop-right .chev{flex:0 0 30px;width:30px;height:30px}
+.desktop-right .cleaners-actions{grid-template-columns:1fr;padding:6px;gap:0}
+.desktop-right .cleaners-actions .action{border-radius:10px!important;text-align:left;padding:9px 12px;min-height:39px;font-size:15px}
+.desktop-right .cleaners-actions .action+.action::before{left:12px}
+.desktop-right .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.desktop-right .stat{padding:10px 6px}
+.desktop-right .stat b{font-size:24px}
+.cleaner-days{margin-top:0}
+.cleaner-day{border-radius:18px}
+.cleaner-list{padding:3px 18px 10px}
+.cleaner-row{min-height:46px;padding:10px 5px;gap:16px}
+.cleaner-name{flex:1;min-width:0;font-size:15px;line-height:1.35;overflow-wrap:anywhere}
+.cleaner-check{width:22px;height:22px;margin:0 3px}
+.cleaner-row+.cleaner-row{border-top-color:var(--sep)}
+@media(max-width:899px){
+ .desktop-columns,.desktop-left,.desktop-right{display:contents}
+ main.wrap.cleaners-main{display:flex;flex-direction:column;padding-top:12px}
+ .desktop-date{order:1}
+ .desktop-actions-head{order:2}
+ .desktop-actions{order:3}
+ .desktop-sync-foot{order:4}
+ .desktop-stats{order:5}
+ .cleaner-list-heading{order:6}
+ #cleanerDays{order:7}
+ .cleaner-list-heading{margin:15px 4px 7px!important}
+ .desktop-right .date-row{padding:8px 12px;gap:8px}
+ .desktop-right .date-row input{font-size:16px;padding:7px 8px}
+ .desktop-right .today{font-size:16px;padding:7px 10px}
+ .desktop-right .cleaners-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px}
+ .desktop-right .cleaners-actions .action{border-radius:10px!important;text-align:left;padding:10px 12px;font-size:15px;min-height:42px}
+ .cleaner-list{padding:2px 14px 8px}
+ .cleaner-row{padding:10px 3px;min-height:44px;gap:12px}
+ .cleaner-name{font-size:15px}
+}
+@media(max-width:480px){
+ .desktop-right .cleaners-actions{grid-template-columns:1fr}
+ .desktop-right .cleaners-actions .action{width:100%}
+ .cleaner-list{padding:0 12px 8px}
+ .cleaner-row{padding:10px 2px}
+}
+
+</style>
+
+
+<style>
+/* Final Cleaners responsive layout overrides */
+@media(min-width:900px){
+ .desktop-columns{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(300px,340px)!important;gap:20px!important;align-items:start}
+ .desktop-left{display:block!important;min-width:0}
+ .desktop-right{display:flex!important;flex-direction:column;gap:10px;min-width:0}
+ .desktop-right .cleaners-actions{display:grid!important;grid-template-columns:1fr!important;gap:0!important;padding:6px!important}
+ .desktop-right .cleaners-actions .action{width:100%;border-radius:10px!important;text-align:left;padding:9px 12px;min-height:39px;font-size:15px}
+ .cleaner-list{padding:3px 18px 10px!important}
+ .cleaner-row{min-height:46px;padding:10px 5px!important;gap:16px!important}
+ .cleaner-name{flex:1;min-width:0;font-size:15px;line-height:1.35}
+ .cleaner-check{width:22px;height:22px;margin:0 3px}
+}
+@media(max-width:899px){
+ .desktop-columns,.desktop-left,.desktop-right{display:contents!important}
+ main.wrap.cleaners-main{display:flex!important;flex-direction:column;padding-top:12px}
+ .desktop-date{order:1!important}
+ .desktop-actions-head{order:2!important}
+ .desktop-actions{order:3!important}
+ .desktop-sync-foot{order:4!important}
+ .desktop-stats{order:5!important}
+ .cleaner-list-heading{order:6!important;margin:15px 4px 7px!important}
+ #cleanerDays{order:7!important;margin-top:0!important}
+ .desktop-right .date-row{display:flex;align-items:center;gap:8px;padding:8px 12px}
+ .desktop-right .date-row .mid{flex:1;min-width:0}
+ .desktop-right .date-row input{width:100%;min-width:0;font-size:16px;padding:7px 8px}
+ .desktop-right .today{font-size:16px;padding:7px 10px;white-space:nowrap}
+ .desktop-right .cleaners-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:10px!important}
+ .desktop-right .cleaners-actions .action{border-radius:10px!important;text-align:left;padding:10px 12px;font-size:15px;min-height:42px}
+ .cleaner-list{padding:2px 14px 8px!important}
+ .cleaner-row{padding:10px 3px!important;min-height:44px;gap:12px!important}
+ .cleaner-name{flex:1;min-width:0;font-size:15px;line-height:1.35}
+}
+@media(max-width:480px){.desktop-right .cleaners-actions{grid-template-columns:1fr!important}.desktop-right .cleaners-actions .action{width:100%}.cleaner-list{padding:0 12px 8px!important}.cleaner-row{padding:10px 2px!important}}
+</style>
+
+
+<style>
+/* Final action-button spacing: consistent inset, clear separation, no clipped separators. */
+.cleaners-actions{display:flex!important;flex-direction:column!important;gap:6px!important;padding:10px!important;box-sizing:border-box;width:100%;}
+.cleaners-actions .action{display:block!important;width:100%;box-sizing:border-box;min-width:0;min-height:42px;padding:10px 14px!important;margin:0!important;border:1px solid rgba(120,120,128,.14)!important;border-radius:11px!important;text-align:left;line-height:1.3;white-space:normal;overflow-wrap:anywhere;}
+.cleaners-actions .action+.action::before{display:none!important;content:none!important;}
+@media(min-width:900px){.desktop-right{gap:10px!important}.desktop-right .cleaners-actions{gap:5px!important;padding:9px!important}.desktop-right .cleaners-actions .action{min-height:39px;padding:9px 12px!important;font-size:15px;}}
+@media(max-width:899px){.desktop-right .cleaners-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:10px!important}.desktop-right .cleaners-actions .action{min-height:42px;padding:10px 12px!important;font-size:15px;}}
+@media(max-width:480px){.desktop-right .cleaners-actions{grid-template-columns:minmax(0,1fr)!important;gap:7px!important}.desktop-right .cleaners-actions .action{width:100%;}}
+@media(prefers-color-scheme:dark){.cleaners-actions .action{border-color:rgba(255,255,255,.10)!important;}}
+</style>
+
+
+<style id="cleaners-balanced-layout">
+/* Consistent spacing overrides for the cleaners tracker */
+*{box-sizing:border-box}
+main.wrap.cleaners-main{width:min(100% - 32px,1240px)!important;max-width:1240px!important;margin-inline:auto!important;padding:18px 0 40px!important}
+.cleaners-main .desktop-columns{display:grid!important;grid-template-columns:minmax(0,1fr) 310px!important;align-items:start!important;gap:18px!important}
+.cleaners-main .desktop-left,.cleaners-main .desktop-right{display:flex!important;flex-direction:column!important;gap:12px!important;min-width:0!important}
+.cleaners-main .desktop-left .head,.cleaners-main .desktop-right .head{margin:0 4px!important;min-height:24px!important;display:flex;align-items:center}
+.cleaners-main .desktop-date,.cleaners-main .stats,.cleaners-main .cleaner-day,.cleaners-main .actions-panel{margin:0!important;width:100%!important;min-width:0!important}
+.cleaners-main .date-row{display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;padding:10px 12px!important;min-height:58px!important}
+.cleaners-main .date-row .mid{flex:1 1 auto!important;min-width:0!important;display:flex!important;justify-content:center!important}
+.cleaners-main .date-row input{width:100%!important;max-width:240px!important;min-width:0!important;height:40px!important;margin:0!important}
+.cleaners-main .date-row .today{flex:0 0 auto!important;min-height:40px!important;padding:8px 14px!important;margin:0!important;white-space:nowrap}
+.cleaners-main .stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0!important;overflow:hidden}
+.cleaners-main .stat{min-width:0!important;padding:12px 8px!important}
+.cleaners-main .stat+.stat{border-left:1px solid var(--sep)!important}
+.cleaners-main .actions-panel{display:flex!important;flex-direction:column!important;gap:8px!important;padding:10px!important}
+.cleaners-main .actions-panel .action{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;min-height:42px!important;margin:0!important;padding:10px 12px!important;line-height:1.25!important;text-align:center!important;white-space:normal!important;border-radius:12px!important}
+.cleaners-main .actions-panel .action+.action::before{display:none!important}
+.cleaners-main .desktop-sync-foot{margin:0!important;padding:0 4px!important;line-height:1.45!important}
+.cleaners-main .cleaner-days{display:grid!important;gap:12px!important;margin:0!important;min-width:0!important}
+.cleaners-main .cleaner-day{border-radius:16px!important}
+.cleaners-main .cleaner-list{padding:4px 16px 8px!important}
+.cleaners-main .cleaner-row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-height:46px!important;padding:10px 4px!important;margin:0!important}
+.cleaners-main .cleaner-name{flex:1 1 auto!important;min-width:0!important;line-height:1.35!important;overflow-wrap:anywhere!important}
+.cleaners-main .cleaner-check{flex:0 0 22px!important;width:22px!important;height:22px!important;margin:0 2px!important}
+.cleaners-main .readonly-note{margin:0!important}
+@media(max-width:899px){
+ main.wrap.cleaners-main{width:calc(100% - 24px)!important;padding:12px 0 28px!important}
+ .cleaners-main .desktop-columns{display:flex!important;flex-direction:column!important;gap:12px!important}
+ .cleaners-main .desktop-left,.cleaners-main .desktop-right{display:contents!important}
+ .cleaners-main .desktop-date{order:1!important}
+ .cleaners-main .readonly-note{order:2!important}
+ .cleaners-main .desktop-actions-head{order:3!important}
+ .cleaners-main .desktop-actions{order:4!important}
+ .cleaners-main .desktop-sync-foot{order:5!important}
+ .cleaners-main .stats{order:6!important}
+ .cleaners-main .desktop-left .head{order:7!important}
+ .cleaners-main .cleaner-days{order:8!important;width:100%!important}
+ .cleaners-main .date-row{gap:8px!important;padding:9px 10px!important;min-height:54px!important}
+ .cleaners-main .date-row input{max-width:none!important;height:40px!important;font-size:16px!important}
+ .cleaners-main .date-row .today{padding:8px 12px!important;min-height:40px!important}
+ .cleaners-main .actions-panel{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:10px!important}
+ .cleaners-main .actions-panel .action{min-height:42px!important;padding:9px 8px!important;font-size:14px!important;overflow-wrap:anywhere!important}
+ .cleaners-main .cleaner-list{padding:3px 14px 8px!important}
+}
+@media(max-width:420px){
+ main.wrap.cleaners-main{width:calc(100% - 20px)!important;padding-top:10px!important}
+ .cleaners-main .actions-panel{grid-template-columns:minmax(0,1fr)!important;gap:7px!important;padding:9px!important}
+ .cleaners-main .actions-panel .action{min-height:40px!important}
+ .cleaners-main .date-row{gap:7px!important;padding:8px!important}
+ .cleaners-main .date-row .today{padding:8px 10px!important}
+ .cleaners-main .cleaner-list{padding-inline:12px!important}
+}
+@media(prefers-reduced-motion:reduce){.cleaners-main *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+
+</head>
+<body>
+<style>
+#protected-app{display:none}
+#password-gate{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px;background:#05060a;color:#fff;font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;isolation:isolate;overflow:hidden;contain:paint;opacity:1;transform:translateZ(0);transition:opacity .38s ease,transform .38s ease;}
+#password-gate.is-unlocking{opacity:0;transform:scale(1.018);pointer-events:none}
+#password-gate::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:rgba(10,4,9,0);transition:background .45s ease}
+#password-gate.has-error::after{background:rgba(12,3,8,.62)}
+/* One CSS-only animated color field: no timers, canvas, or per-frame JavaScript. */
+#password-gate::before{content:"";position:absolute;left:-22%;right:-22%;top:-22%;height:85vh;z-index:-1;pointer-events:none;background:
+  radial-gradient(ellipse at 15% 16%,rgba(111,20,63,.78) 0%,rgba(111,20,63,0) 42%),
+  radial-gradient(ellipse at 79% 18%,rgba(112,65,31,.72) 0%,rgba(112,65,31,0) 39%),
+  radial-gradient(ellipse at 18% 78%,rgba(43,23,112,.88) 0%,rgba(43,23,112,0) 43%),
+  radial-gradient(ellipse at 78% 78%,rgba(12,49,72,.82) 0%,rgba(12,49,72,0) 42%),
+  radial-gradient(ellipse at 49% 45%,rgba(63,22,64,.38) 0%,rgba(63,22,64,0) 45%),
+  linear-gradient(145deg,#21101d 0%,#151022 48%,#081722 100%);background-size:145% 145%;filter:blur(62px) saturate(125%);opacity:.96;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 92%);mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 92%);
+  transform:translate3d(0,0,0);will-change:transform;animation:auroraDrift 22s ease-in-out infinite alternate;backface-visibility:hidden;transition:background .45s ease}
+#password-gate.has-error::before{background:radial-gradient(ellipse at 15% 16%,rgba(180,24,38,.58),transparent 42%),radial-gradient(ellipse at 79% 18%,rgba(125,18,30,.52),transparent 39%),radial-gradient(ellipse at 18% 78%,rgba(150,15,38,.48),transparent 43%),radial-gradient(ellipse at 78% 78%,rgba(195,38,45,.38),transparent 42%),linear-gradient(145deg,#18070b 0%,#10080d 48%,#08070b 100%)}
+#password-gate .gate-card{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){#password-gate,#password-gate::before,#password-gate::after{animation:none!important;transition:none!important;transform:none!important}}
+#password-gate .gate-card{width:min(100%,420px);padding:32px;border:1px solid rgba(255,255,255,.22);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.055));backdrop-filter:saturate(180%) blur(28px);-webkit-backdrop-filter:saturate(180%) blur(28px);box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 24px 70px rgba(0,0,0,.3)}
+#password-gate .gate-mark{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);margin-bottom:24px;color:var(--blue)}
+#password-gate h2{font-size:clamp(27px,6vw,34px);font-weight:700;letter-spacing:-.8px;line-height:1.12;margin:0 0 8px;color:#fff}
+#password-gate .gate-subtitle{font-size:13px;letter-spacing:.3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin:0 0 20px}
+#password-gate p{font-size:15px;line-height:1.5;color:rgba(255,255,255,.68);margin:0 0 20px}
+#password-gate input{display:block;width:100%;box-sizing:border-box;padding:15px 16px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(0,0,0,.25);color:#fff;font:inherit;outline:none;transition:border-color .18s,background .18s}
+#password-gate input::placeholder{color:rgba(255,255,255,.42)}
+#password-gate input:focus{border-color:var(--blue);background:rgba(0,0,0,.34);box-shadow:0 0 0 3px rgba(0,122,255,.16)}
+#password-gate .remember-row{display:flex;align-items:center;gap:9px;margin-top:13px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.35;cursor:pointer;width:fit-content}
+#password-gate .remember-row input{appearance:auto;-webkit-appearance:checkbox;width:16px;height:16px;margin:0;accent-color:var(--blue);cursor:pointer;flex:none;box-shadow:none}
+#password-gate button{width:100%;margin-top:16px;padding:15px 18px;border:1px solid transparent;border-radius:999px;background:var(--blue);color:#fff;font:600 16px "SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;transition:background .16s,filter .15s,transform .15s;will-change:transform}
+#password-gate button:hover{filter:brightness(1.08)}
+#password-gate button:active{transform:scale(.98)}
+#password-gate button.is-error{background:#FF3B30;border-color:#FF3B30;animation:loginWiggle .42s ease-in-out}
+@keyframes loginWiggle{0%,100%{transform:translateX(0)}15%,45%,75%{transform:translateX(-6px)}30%,60%,90%{transform:translateX(6px)}}
+@media(prefers-reduced-motion:reduce){#password-gate button.is-error{animation:none}}
+#password-gate .gate-error{min-height:20px;margin:10px 0 0;color:var(--red);font-size:13px}
+@media(prefers-color-scheme:light){#password-gate{background:#05060a;color:#fff}#password-gate .gate-card{border-color:rgba(255,255,255,.22)}}
+
+/* Responsive login card: fluid sizing, balanced bottom spacing, same visual system at every width. */
+#password-gate {
+  padding: clamp(14px, 3.5vw, 24px);
+}
+#password-gate .gate-card {
+  width: min(100%, 420px);
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: clamp(22px, 4.5vw, 32px);
+  border-radius: clamp(20px, 3vw, 24px);
+  background: rgba(24, 26, 38, 0.58);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 24px 70px rgba(0,0,0,0.32);
+  backdrop-filter: saturate(180%) blur(28px);
+  -webkit-backdrop-filter: saturate(180%) blur(28px);
+}
+#password-gate .gate-mark {
+  width: clamp(42px, 7vw, 48px);
+  height: clamp(42px, 7vw, 48px);
+  margin-bottom: clamp(16px, 3vw, 22px);
+}
+#password-gate h2 {
+  font-size: clamp(25px, 4.5vw, 34px);
+  margin-bottom: 7px;
+}
+#password-gate .gate-subtitle {
+  font-size: clamp(11px, 1.8vw, 13px);
+  margin-bottom: clamp(14px, 2.6vw, 18px);
+}
+#password-gate p {
+  font-size: clamp(13px, 2.1vw, 15px);
+  line-height: 1.45;
+  margin-bottom: clamp(14px, 2.6vw, 18px);
+}
+#password-gate input {
+  padding: clamp(12px, 2.2vw, 15px) clamp(13px, 2.4vw, 16px);
+  font-size: clamp(14px, 2.2vw, 16px);
+}
+#password-gate button {
+  margin-top: 12px;
+  padding: clamp(12px, 2.2vw, 15px) 18px;
+  font-size: clamp(14px, 2.2vw, 16px);
+}
+#password-gate .gate-error {
+  min-height: 0;
+  margin: 0;
+  font-size: 13px;
+}
+#password-gate .gate-error:empty {
+  display: none;
+}
+#password-gate .gate-error:not(:empty) {
+  margin-top: 8px;
+}
+@media (max-width: 700px) {
+  #password-gate .gate-card {
+    background: #1c1d24;
+    border-color: rgba(255,255,255,0.14);
+    box-shadow: 0 16px 44px rgba(0,0,0,0.38);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+</style>
+<div id="password-gate">
+  <form class="gate-card" id="gate-form">
+    <div class="gate-mark" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+    <h2>Cleaners</h2>
+    <div class="gate-subtitle class-title">11-ACAD D-1AM · 2026–2027</div>
+    <p>This page is password protected. Enter the password to continue.</p>
+    <input id="gate-password" type="password" placeholder="Password" autocomplete="current-password" required autofocus>
+    <label class="remember-row" for="gate-remember"><input id="gate-remember" type="checkbox"> <span>Remember me on this device</span></label>
+    <button id="gate-submit" type="submit">Log in</button>
+    <div class="gate-error" id="gate-error" role="status" aria-live="polite"></div>
+  </form>
+</div>
+<div id="protected-app">
+
+<svg aria-hidden="true" width="0" height="0" style="position:absolute;visibility:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
+<filter id="liquidGlassFilter" color-interpolation-filters="sRGB" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.011" numOctaves="2" seed="8" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence"/><feDisplacementMap in="SourceGraphic" in2="turbulence" scale="22" xChannelSelector="R" yChannelSelector="B" x="0%" y="0%" width="100%" height="100%"/></filter>
+<filter id="liquidGlassFilter2" color-interpolation-filters="linearRGB" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse"><feBlend mode="screen" in="SourceGraphic" in2="SourceGraphic" result="blend"/><feTurbulence type="fractalNoise" baseFrequency="0.019 0.008" numOctaves="3" seed="8" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence"/><feDisplacementMap in="blend" in2="turbulence" scale="3" xChannelSelector="R" yChannelSelector="B"/></filter>
+</defs></svg>
+
+<header class="nav liquidGlass blur-5" id="nav">
+  <div class="wrap">
+    <div class="titlebar"><div class="title-stack"><h1>Cleaners</h1><div class="subtitle class-title">11-ACAD D-1AM <span aria-hidden="true">·</span> 2026–2027</div></div><button class="lock-btn liquidGlass blur-4" id="dayLock" type="button" aria-label="Lock day" title="Lock day" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></button></div>
+    <label class="search liquidGlass blur-5">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>
+      <input id="q" type="search" placeholder="Search" aria-label="Search names" autocomplete="off">
+    </label>
+  </div>
+</header>
+
+<main class="wrap cleaners-main">
+  <div class="desktop-columns">
+    <section class="desktop-left">
+      <div class="head cleaner-list-heading"><span id="activeDayLabel" aria-live="polite"></span></div>
+      <div id="cleanerDays" class="cleaner-days"></div>
+    </section>
+    <aside class="desktop-right">
+      <section class="group date-panel desktop-date liquidGlass blur-5" aria-label="Choose attendance date">
+        <div class="date-row row">
+          <div class="mid"><input id="attendanceDate" type="date" aria-label="Attendance date"></div>
+          <button class="today liquidGlass blur-4" id="today" type="button">Today</button>
+        </div>
+      </section>
+      <div class="head desktop-actions-head"><span>Actions</span></div>
+      <div class="group liquidGlass blur-5 actions-panel cleaners-actions desktop-actions">
+        <button class="action liquidGlass blur-4" id="sync">Save to Google Sheets</button>
+        <button class="action liquidGlass blur-4" id="pull">Syncing...</button>
+        <button class="action liquidGlass blur-4" id="allPresent">Set Everyone: Present</button>
+        <button class="action liquidGlass blur-4" id="allUnmarked">Set Everyone: Unmarked</button>
+        <button class="action liquidGlass blur-4" id="exportImg">Export as Image</button>
+        <button class="action liquidGlass blur-4" id="export">Export to File</button>
+        <button class="action danger liquidGlass blur-4" id="clearDay">Clear Selection</button>
+      </div>
+      <div class="group stats liquidGlass blur-5 desktop-stats" aria-live="polite">
+        <div class="stat p"><b id="count-present">0</b><span>Present</span></div>
+        <div class="stat"><b id="count-unmarked">0</b><span>Unmarked</span></div>
+      </div>
+      <div class="readonly-note" id="readonlyNote" hidden></div>
+      <p class="foot desktop-sync-foot">Attendance is saved on this device. Google Sheets syncing requires a compatible cleaners endpoint in the Apps Script.</p>
+    </aside>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+
+<script>
+(function(){
+  "use strict";
+  var expected = "e388fa16a3223b116a8f37ec2e490b5c36094a94c2cfacce9defa3564e8fe3c8";
+  var encodedParts = [
+    "KGZ1bmN0aW9uKCl7CiAgInVzZSBzdHJpY3QiOwogIHZhciBTVE9SQUdFX0tFWSA9ICJhY2FkLWQxLWNsZWFuZXJzLXRyYWNrZXIt",
+    "djIiOwogIHZhciBMT0NLX0tFWSA9ICJhY2FkLWQxLWNsZWFuZXJzLWxvY2tzLXYxIjsKICB2YXIgU1lOQ19VUkwgPSAiaHR0cHM6",
+    "Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4YmNrNDBoUEZxTWJyS0M0MGpMeG9Kb3BrdGlES1kyYkdocTUtZUFR",
+    "SHNhdWE2bWZtT3NsZE04aDd1a1h5alR0Rm0yUS9leGVjIjsKICB2YXIgR1JPVVBTID0gewogICAgTW9uZGF5OiBbIkVTUElSSVRV",
+    "IiwiUk9ZTyIsIkJBUlRPTEFUQSIsIkJPSE9MIiwiQ09OQ0VQQ0lPTiIsIkdFVkVOIiwiVVJTVUEiLCJQQUNBVEFORyIsIkdBTEFO",
+    "RyIsIkNBUlJJTExPIiwiVEFOIiwiUEFOR0lMSU5BTiJdLAogICAgVHVlc2RheTogWyJCRVJJTk8iLCJFU1BBTk9MQSIsIlNBUkNP",
+    "UyIsIkZVTlRFTE9OIiwiUEFZQU8iLCJQRUxBWU8iLCJBUkFPIiwiRVNUUkFEQSIsIkRJT0xBIiwiVklMTEFNT1IiLCJSRVlFUyIs",
+    "IkVDSE9OIl0sCiAgICBXZWRuZXNkYXk6IFsiSlVBTklaQSIsIlNBTlRJQUdPIiwiRE9MT1JFUyIsIk1JTkRPUk8iLCJURUpFUk8i",
+    "LCJHVVRJRVJSRVoiLCJEVUxBWSIsIkFMQUJBTiIsIkJVQVRPIiwiTEVCSVMiLCJTQUxBWkFSIiwiRkVMSVBFIiwiQUJBWU9OIl0s",
+    "CiAgICBGcmlkYXk6IFsiQkFORUNPIiwiRVNUUkVMTEEiLCJCQUxMQUQiLCJVTElUIiwiUk9RVUUiLCJCRVJOQVJETyIsIlNJTFVE",
+    "IiwiQVJFRElET04iLCJNT1JJUyIsIlBBSk8iLCJDTEFVRElPIiwiQlJBVk8iXQogIH07CiAgdmFyIGRhdGEgPSBsb2FkKCk7CiAg",
+    "dmFyIGRheUxvY2tzID0gbG9hZExvY2tzKCk7CiAgdmFyIHNlbGVjdGVkRGF0ZSA9IG5ldyBEYXRlKCk7IHNlbGVjdGVkRGF0ZS5z",
+    "ZXRIb3VycygxMiwwLDAsMCk7CiAgZnVuY3Rpb24gJChpZCl7cmV0dXJuIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKGlkKTt9CiAg",
+    "ZnVuY3Rpb24gcGFyc2VTdG9yZWQocmF3KXt0cnl7dmFyIHg9SlNPTi5wYXJzZShyYXd8fCJ7fSIpO3JldHVybiB4JiZ0eXBlb2Yg",
+    "eD09PSJvYmplY3QiP3g6e307fWNhdGNoKGUpe3JldHVybiB7fTt9fQogIGZ1bmN0aW9uIGxvYWQoKXsKICAgIHZhciB4PXBhcnNl",
+    "U3RvcmVkKGxvY2FsU3RvcmFnZS5nZXRJdGVtKFNUT1JBR0VfS0VZKSk7CiAgICAvLyBNaWdyYXRlIHRoZSBlYXJsaWVyIGRheS1v",
+    "bmx5IGZvcm1hdCBpbnRvIHRvZGF5J3MgZGF0ZSwgd2l0aG91dCBhcHBseWluZyBpdCB0byBldmVyeSBkYXRlLgogICAgaWYoIU9i",
+    "amVjdC5rZXlzKHgpLnNvbWUoZnVuY3Rpb24oayl7cmV0dXJuIC9eXGR7NH0tXGR7Mn0tXGR7Mn0kLy50ZXN0KGspO30pKXsKICAg",
+    "ICAgdmFyIG9sZD1wYXJzZVN0b3JlZChsb2NhbFN0b3JhZ2UuZ2V0SXRlbSgiYWNhZC1kMS1jbGVhbmVycy10cmFja2VyLXYxIikp",
+    "OwogICAgICBpZihPYmplY3Qua2V5cyhvbGQpLnNvbWUoZnVuY3Rpb24oayl7cmV0dXJuIE9iamVjdC5wcm90b3R5cGUuaGFzT3du",
+    "UHJvcGVydHkuY2FsbChHUk9VUFMsayk7fSkpewogICAgICAgIHZhciBtaWdyYXRlZD17fTsgbWlncmF0ZWRbZGF0ZUtleShuZXcg",
+    "RGF0ZSgpKV09e307CiAgICAgICAgT2JqZWN0LmtleXMoR1JPVVBTKS5mb3JFYWNoKGZ1bmN0aW9uKGRheSl7bWlncmF0ZWRbZGF0",
+    "ZUtleShuZXcgRGF0ZSgpKV1bZGF5XT17fTtHUk9VUFNbZGF5XS5mb3JFYWNoKGZ1bmN0aW9uKG5hbWUpe2lmKG9sZFtkYXldJiZv",
+    "bGRbZGF5XVtuYW1lXT09PSJQcmVzZW50IiltaWdyYXRlZFtkYXRlS2V5KG5ldyBEYXRlKCkpXVtkYXldW25hbWVdPSJQcmVzZW50",
+    "Ijt9KTt9KTsKICAgICAgICB4PW1pZ3JhdGVkOwogICAgICB9CiAgICB9CiAgICByZXR1cm4geDsKICB9CiAgZnVuY3Rpb24gbG9h",
+    "ZExvY2tzKCl7cmV0dXJuIHBhcnNlU3RvcmVkKGxvY2FsU3RvcmFnZS5nZXRJdGVtKExPQ0tfS0VZKSk7fQogIGZ1bmN0aW9uIHNh",
+    "dmUoKXtzYXZlQ291bnRzT25seSgpO3RvYXN0KCJTYXZlZCBvbiB0aGlzIGRldmljZSIpO3JlbmRlclN0YXRzKCk7fQogIGZ1bmN0",
+    "aW9uIHNhdmVDb3VudHNPbmx5KCl7dHJ5e2xvY2FsU3RvcmFnZS5zZXRJdGVtKFNUT1JBR0VfS0VZLEpTT04uc3RyaW5naWZ5KGRh",
+    "dGEpKTt9Y2F0Y2goZSl7fX0KICBmdW5jdGlvbiBzYXZlTG9ja3MoKXt0cnl7bG9jYWxTdG9yYWdlLnNldEl0ZW0oTE9DS19LRVks",
+    "SlNPTi5zdHJpbmdpZnkoZGF5TG9ja3MpKTt9Y2F0Y2goZSl7fX0KICBmdW5jdGlvbiB0b2FzdChtZXNzYWdlKXt2YXIgZWw9JCgi",
+    "dG9hc3QiKTtpZighZWwpcmV0dXJuO2VsLnRleHRDb250ZW50PW1lc3NhZ2U7ZWwuY2xhc3NMaXN0LmFkZCgic2hvdyIpO2NsZWFy",
+    "VGltZW91dCh0b2FzdC50aW1lcik7dG9hc3QudGltZXI9c2V0VGltZW91dChmdW5jdGlvbigpe2VsLmNsYXNzTGlzdC5yZW1vdmUo",
+    "InNob3ciKTt9LDI2MDApO30KICBmdW5jdGlvbiBkYXRlS2V5KGQpe3JldHVybiBkLmdldEZ1bGxZZWFyKCkrIi0iK1N0cmluZyhk",
+    "LmdldE1vbnRoKCkrMSkucGFkU3RhcnQoMiwiMCIpKyItIitTdHJpbmcoZC5nZXREYXRlKCkpLnBhZFN0YXJ0KDIsIjAiKTt9CiAg",
+    "ZnVuY3Rpb24gc2VsZWN0ZWRLZXkoKXtyZXR1cm4gZGF0ZUtleShzZWxlY3RlZERhdGUpO30KICBmdW5jdGlvbiBjdXJyZW50RGF5",
+    "KCl7cmV0dXJuICh7MToiTW9uZGF5IiwyOiJUdWVzZGF5IiwzOiJXZWRuZXNkYXkiLDU6IkZyaWRheSJ9KVtzZWxlY3RlZERhdGUu",
+    "Z2V0RGF5KCldfHxudWxsO30KICBmdW5jdGlvbiBkYXlEYXRhKGRheSl7dmFyIGtleT1zZWxlY3RlZEtleSgpO2lmKCFkYXRhW2tl",
+    "eV0pZGF0YVtrZXldPXt9O2lmKCFkYXRhW2tleV1bZGF5XSlkYXRhW2tleV1bZGF5XT17fTtyZXR1cm4gZGF0YVtrZXldW2RheV07",
+    "fQogIGZ1bmN0aW9uIGdldFN0YXR1cyhkYXksbmFtZSl7dmFyIGVudHJ5PWRhdGFbc2VsZWN0ZWRLZXkoKV0mJmRhdGFbc2VsZWN0",
+    "ZWRLZXkoKV1bZGF5XTtyZXR1cm4gZW50cnkmJmVudHJ5W25hbWVdPT09IlByZXNlbnQiPyJQcmVzZW50IjoiVW5tYXJrZWQiO30K",
+    "ICBmdW5jdGlvbiBzZXRTdGF0dXMoZGF5LG5hbWUscHJlc2VudCl7dmFyIGVudHJ5PWRheURhdGEoZGF5KTtpZihwcmVzZW50KWVu",
+    "dHJ5W25hbWVdPSJQcmVzZW50IjtlbHNlIGRlbGV0ZSBlbnRyeVtuYW1lXTt9CiAgZnVuY3Rpb24gaXNXZWVrZW5kKGtleSl7dmFy",
+    "IHA9a2V5LnNwbGl0KCItIik7dmFyIHc9bmV3IERhdGUoK3BbMF0sK3BbMV0tMSwrcFsyXSkuZ2V0RGF5KCk7cmV0dXJuIHc9PT0w",
+    "fHx3PT09Njt9CiAgZnVuY3Rpb24gaXNBdXRvTG9ja2VkKGtleSl7dmFyIG5vdz1uZXcgRGF0ZSgpLHRvZGF5PWRhdGVLZXkobm93",
+    "KTtpZihpc1dlZWtlbmQoa2V5KSlyZXR1cm4gdHJ1ZTtyZXR1cm4ga2V5IT09dG9kYXl8fG5vdy5nZXRIb3VycygpPjEzfHwobm93",
+    "LmdldEhvdXJzKCk9PT0xMyYmbm93LmdldE1pbnV0ZXMoKT49MzApO30KICBmdW5jdGlvbiBpc0xvY2tlZCgpe3ZhciBrZXk9c2Vs",
+    "ZWN0ZWRLZXkoKTtpZihpc1dlZWtlbmQoa2V5KSlyZXR1cm4gdHJ1ZTtpZihPYmplY3QucHJvdG90eXBlLmhhc093blByb3BlcnR5",
+    "LmNhbGwoZGF5TG9ja3Msa2V5KSlyZXR1cm4gZGF5TG9ja3Nba2V5XSE9PWZhbHNlO3JldHVybiBpc0F1dG9Mb2NrZWQoa2V5KTt9",
+    "CiAgZnVuY3Rpb24gdXBkYXRlTG9ja1VJKCl7CiAgICB2YXIgYj0kKCJkYXlMb2NrIik7aWYoIWIpcmV0dXJuO3ZhciBsb2NrZWQ9",
+    "aXNMb2NrZWQoKSx3ZWVrZW5kPWlzV2Vla2VuZChzZWxlY3RlZEtleSgpKTsKICAgIGIuaW5uZXJIVE1MPWxvY2tlZD8nPHN2ZyB2",
+    "aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ry",
+    "b2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHJlY3QgeD0iNSIg",
+    "eT0iMTAiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxMSIgcng9IjIiLz48cGF0aCBkPSJNOCAxMFY3YTQgNCAwIDAgMSA4IDB2MyIvPjwv",
+    "c3ZnPic6Jzxzdmcgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdp",
+    "ZHRoPSIxLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgYXJpYS1oaWRkZW49InRydWUi",
+    "PjxyZWN0IHg9IjUiIHk9IjEwIiB3aWR0aD0iMTQiIGhlaWdodD0iMTEiIHJ4PSIyIi8+PHBhdGggZD0iTTggMTBWN2E0IDQgMCAw",
+    "IDEgNy41LTIiLz48L3N2Zz4nOwogICAgYi5zZXRBdHRyaWJ1dGUoImFyaWEtbGFiZWwiLHdlZWtlbmQ/IldlZWtlbmQgcGVybWFu",
+    "ZW50bHkgbG9ja2VkIjpsb2NrZWQ/IlVubG9jayBkYXkiOiJMb2NrIGRheSIpO2IudGl0bGU9d2Vla2VuZD8iU2F0dXJkYXkgYW5k",
+    "IFN1bmRheSBjYW5ub3QgYmUgdW5sb2NrZWQiOmxvY2tlZD8iVW5sb2NrIGRheSI6IkxvY2sgZGF5IjtiLnNldEF0dHJpYnV0ZSgi",
+    "YXJpYS1wcmVzc2VkIixsb2NrZWQ/InRydWUiOiJmYWxzZSIpO2IuZGlzYWJsZWQ9d2Vla2VuZDsKICAgIHZhciBub3RlPSQoInJl",
+    "YWRvbmx5Tm90ZSIpO2lmKG5vdGUpe25vdGUuaGlkZGVuPSFsb2NrZWQ7bm90ZS50ZXh0Q29udGVudD13ZWVrZW5kPyJTYXR1cmRh",
+    "eSBhbmQgU3VuZGF5IGFyZSBwZXJtYW5lbnRseSBsb2NrZWQgYW5kIGNhbm5vdCBiZSB1bmxvY2tlZC4iOnNlbGVjdGVkS2V5KCk8",
+    "ZGF0ZUtleShuZXcgRGF0ZSgpKT8iVGhpcyBpcyBhIHByZXZpb3VzIGRheSBhbmQgaXMgbG9ja2VkIGJ5IGRlZmF1bHQuIjpzZWxl",
+    "Y3RlZEtleSgpPmRhdGVLZXkobmV3IERhdGUoKSk/IlRoaXMgaXMgYSBmdXR1cmUgZGF5IGFuZCBpcyBsb2NrZWQgYnkgZGVmYXVs",
+    "dC4iOiJUb2RheSdzIGF0dGVuZGFuY2UgbG9ja3MgYXV0b21hdGljYWxseSBhdCAxOjMwIFBNLiI7fQogICAgLyogV2hlbiBsb2Nr",
+    "ZWQsIGtlZXAgb25seSB0aGUgdHdvIGV4cG9ydCBidXR0b25zIGF2YWlsYWJsZS4gKi8KICAgIFsic3luYyIsInB1bGwiLCJhbGxQ",
+    "cmVzZW50IiwiY2xlYXJEYXkiLCJ0b2RheSJdLmZvckVhY2goZnVuY3Rpb24oaWQpe3ZhciBjb250cm9sPSQoaWQpO2lmKGNvbnRy",
+    "b2wpe2NvbnRyb2wuZGlzYWJsZWQ9bG9ja2VkO2NvbnRyb2wuc2V0QXR0cmlidXRlKCJhcmlhLWRpc2FibGVkIixsb2NrZWQ/InRy",
+    "dWUiOiJmYWxzZSIpO319KTsKICAgIFsiZXhwb3J0SW1nIiwiZXhwb3J0Il0uZm9yRWFjaChmdW5jdGlvbihpZCl7dmFyIGNvbnRy",
+    "b2w9JChpZCk7aWYoY29udHJvbCl7Y29udHJvbC5kaXNhYmxlZD1mYWxzZTtjb250cm9sLnJlbW92ZUF0dHJpYnV0ZSgiYXJpYS1k",
+    "aXNhYmxlZCIpO319KTsKICB9CiAgZnVuY3Rpb24gc2V0U2VsZWN0ZWREYXRlKHZhbHVlKXt2YXIgZD12YWx1ZSBpbnN0YW5jZW9m",
+    "IERhdGU/bmV3IERhdGUodmFsdWUpOm5ldyBEYXRlKHZhbHVlKyJUMTI6MDA6MDAiKTtpZihpc05hTihkLmdldFRpbWUoKSkpcmV0",
+    "dXJuO2Quc2V0SG91cnMoMTIsMCwwLDApOy8qIE9ubHkgY2xlYW5lciBhdHRlbmRhbmNlIGRheXMgYXJlIE1vbmRheSwgVHVlc2Rh",
+    "eSwgV2VkbmVzZGF5LCBhbmQgRnJpZGF5LiBSZWRpcmVjdCBUaHVyc2RheSB0byBGcmlkYXkgYW5kIHdlZWtlbmRzIHRvIHRoZSBu",
+    "ZXh0IE1vbmRheS4gKi92YXIgd2Vla2RheT1kLmdldERheSgpO2lmKHdlZWtkYXk9PT00KWQuc2V0RGF0ZShkLmdldERhdGUoKSsx",
+    "KTtlbHNlIGlmKHdlZWtkYXk9PT02KWQuc2V0RGF0ZShkLmdldERhdGUoKSsyKTtlbHNlIGlmKHdlZWtkYXk9PT0wKWQuc2V0RGF0",
+    "ZShkLmdldERhdGUoKSsxKTtkLnNldEhvdXJzKDEyLDAsMCwwKTtzZWxlY3RlZERhdGU9ZDt2YXIgaW5wdXQ9JCgiYXR0ZW5kYW5j",
+    "ZURhdGUiKTtpZihpbnB1dClpbnB1dC52YWx1ZT1zZWxlY3RlZEtleSgpO3JlbmRlcigpO30KICBmdW5jdGlvbiByZW5kZXIoKXsK",
+    "ICAgIHVwZGF0ZUxvY2tVSSgpO3ZhciByb290PSQoImNsZWFuZXJEYXlzIik7cm9vdC5pbm5lckhUTUw9IiI7dmFyIGRheT1jdXJy",
+    "ZW50RGF5KCk7dmFyIGxhYmVsPSQoImFjdGl2ZURheUxhYmVsIik7aWYobGFiZWwpbGFiZWwudGV4dENvbnRlbnQ9c2VsZWN0ZWRE",
+    "YXRlLnRvTG9jYWxlRGF0ZVN0cmluZyh1bmRlZmluZWQse3dlZWtkYXk6ImxvbmciLG1vbnRoOiJzaG9ydCIsZGF5OiJudW1lcmlj",
+    "Iix5ZWFyOiJudW1lcmljIn0pOwogICAgaWYoIWRheSl7dmFyIGVtcHR5PWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoImRpdiIpO2Vt",
+    "cHR5LmNsYXNzTmFtZT0iZ3JvdXAgbGlxdWlkR2xhc3MgYmx1ci01IGNsZWFuZXItZW1wdHkiO2VtcHR5LnRleHRDb250ZW50PSJO",
+    "byBjbGVhbmVycyBhcmUgYXNzaWduZWQgZm9yIHRoaXMgZGF5LiI7cm9vdC5hcHBlbmRDaGlsZChlbXB0eSk7cmVuZGVyU3RhdHMo",
+    "KTtyZXR1cm47fQogICAgdmFyIGRldGFpbHM9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic2VjdGlvbiIpO2RldGFpbHMuY2xhc3NO",
+    "YW1lPSJncm91cCBsaXF1aWRHbGFzcyBibHVyLTUgY2xlYW5lci1kYXkiO3ZhciBsaXN0PWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQo",
+    "ImRpdiIpO2xpc3QuY2xhc3NOYW1lPSJjbGVhbmVyLWxpc3QiOwogICAgR1JPVVBTW2RheV0uZm9yRWFjaChmdW5jdGlvbihuYW1l",
+    "KXt2YXIgcm93PWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoImxhYmVsIik7cm93LmNsYXNzTmFtZT0iY2xlYW5lci1yb3ciO3ZhciBu",
+    "YW1lRWw9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic3BhbiIpO25hbWVFbC5jbGFzc05hbWU9ImNsZWFuZXItbmFtZSI7bmFtZUVs",
+    "LnRleHRDb250ZW50PW5hbWU7dmFyIGNoZWNrPWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoImlucHV0Iik7Y2hlY2sudHlwZT0iY2hl",
+    "Y2tib3giO2NoZWNrLmNsYXNzTmFtZT0iY2xlYW5lci1jaGVjayI7Y2hlY2suY2hlY2tlZD1nZXRTdGF0dXMoZGF5LG5hbWUpPT09",
+    "IlByZXNlbnQiO2NoZWNrLmRpc2FibGVkPWlzTG9ja2VkKCk7Y2hlY2suc2V0QXR0cmlidXRlKCJhcmlhLWxhYmVsIixuYW1lKyIg",
+    "cHJlc2VudCIpO2NoZWNrLmFkZEV2ZW50TGlzdGVuZXIoImNoYW5nZSIsZnVuY3Rpb24oKXtpZihpc0xvY2tlZCgpKXtjaGVjay5j",
+    "aGVja2VkPWdldFN0YXR1cyhkYXksbmFtZSk9PT0iUHJlc2VudCI7dG9hc3QoIlRoaXMgZGF5IGlzIGxvY2tlZCBhbmQgcmVhZC1v",
+    "bmx5Iik7cmV0dXJuO31zZXRTdGF0dXMoZGF5LG5hbWUsY2hlY2suY2hlY2tlZCk7c2F2ZUNvdW50c09ubHkoKTtyZW5kZXJTdGF0",
+    "cygpO30pO3Jvdy5hcHBlbmQobmFtZUVsLGNoZWNrKTtsaXN0LmFwcGVuZENoaWxkKHJvdyk7fSk7CiAgICBkZXRhaWxzLmFwcGVu",
+    "ZENoaWxkKGxpc3QpO3Jvb3QuYXBwZW5kQ2hpbGQoZGV0YWlscyk7cmVuZGVyU3RhdHMoKTsKICB9CiAgZnVuY3Rpb24gcmVuZGVy",
+    "U3RhdHMoKXt2YXIgZGF5PWN1cnJlbnREYXkoKSxwcmVzZW50PTAsdG90YWw9ZGF5P0dST1VQU1tkYXldLmxlbmd0aDowO2lmKGRh",
+    "eSlHUk9VUFNbZGF5XS5mb3JFYWNoKGZ1bmN0aW9uKG4pe2lmKGdldFN0YXR1cyhkYXksbik9PT0iUHJlc2VudCIpcHJlc2VudCsr",
+    "O30pO3ZhciBwPSQoImNvdW50LXByZXNlbnQiKSx1PSQoImNvdW50LXVubWFya2VkIik7aWYocClwLnRleHRDb250ZW50PXByZXNl",
+    "bnQ7aWYodSl1LnRleHRDb250ZW50PXRvdGFsLXByZXNlbnQ7fQogIGZ1bmN0aW9uIGRvd25sb2FkKG5hbWUsYmxvYil7dmFyIHVy",
+    "bD1VUkwuY3JlYXRlT2JqZWN0VVJMKGJsb2IpLGE9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiYSIpO2EuaHJlZj11cmw7YS5kb3du",
+    "bG9hZD1uYW1lO2RvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQoYSk7YS5jbGljaygpO2EucmVtb3ZlKCk7c2V0VGltZW91dChmdW5j",
+    "dGlvbigpe1VSTC5yZXZva2VPYmplY3RVUkwodXJsKTt9LDEwMDApO30KICBmdW5jdGlvbiBleHBvcnRGaWxlKCl7dmFyIGRheT1j",
+    "dXJyZW50RGF5KCkscm93cz1bWyJDbGVhbmVyIiwiQXNzaWduZWQgRGF5IiwiRGF0ZSIsIlN0YXR1cyJdXTtpZihkYXkpR1JPVVBT",
+    "W2RheV0uZm9yRWFjaChmdW5jdGlvbihuKXtyb3dzLnB1c2goW24sZGF5LHNlbGVjdGVkS2V5KCksZ2V0U3RhdHVzKGRheSxuKT09",
+    "PSJQcmVzZW50Ij8iUHJlc2VudCI6IlVubWFya2VkIl0pO30pO3ZhciBjc3Y9cm93cy5tYXAoZnVuY3Rpb24ocil7cmV0dXJuIHIu",
+    "bWFwKGZ1bmN0aW9uKHYpe3JldHVybiAnIicrU3RyaW5nKHYpLnJlcGxhY2UoLyIvZywnIiInKSsnIic7fSkuam9pbigiLCIpO30p",
+    "LmpvaW4oIlxyXG4iKTtkb3dubG9hZCgiMTEtQUNBRC1EMS1jbGVhbmVycy1hdHRlbmRhbmNlLSIrc2VsZWN0ZWRLZXkoKSsiLmNz",
+    "diIsbmV3IEJsb2IoWyJcdWZlZmYiK2Nzdl0se3R5cGU6InRleHQvY3N2O2NoYXJzZXQ9dXRmLTg7In0pKTt0b2FzdCgiRXhwb3J0",
+    "ZWQgY2xlYW5lciBhdHRlbmRhbmNlIik7fQogIGZ1bmN0aW9uIGV4cG9ydEltYWdlKCl7dmFyIGNhbnZhcz1kb2N1bWVudC5jcmVh",
+    "dGVFbGVtZW50KCJjYW52YXMiKSxjdHg9Y2FudmFzLmdldENvbnRleHQoIjJkIikscm93cz1bXSxkYXk9Y3VycmVudERheSgpO2lm",
+    "KGRheSl7cm93cy5wdXNoKHtkYXk6ZGF5LGhlYWRlcjp0cnVlfSk7R1JPVVBTW2RheV0uZm9yRWFjaChmdW5jdGlvbihuKXtyb3dz",
+    "LnB1c2goe25hbWU6bixkYXk6ZGF5LHN0YXR1czpnZXRTdGF0dXMoZGF5LG4pPT09IlByZXNlbnQiPyJQcmVzZW50IjoiVW5tYXJr",
+    "ZWQifSk7fSk7fWNhbnZhcy53aWR0aD0xMDAwO2NhbnZhcy5oZWlnaHQ9MTQwK3Jvd3MubGVuZ3RoKjM1O2N0eC5maWxsU3R5bGU9",
+    "IiMxMDExMTYiO2N0eC5maWxsUmVjdCgwLDAsY2FudmFzLndpZHRoLGNhbnZhcy5oZWlnaHQpO2N0eC5maWxsU3R5bGU9IiNmZmYi",
+    "O2N0eC5mb250PSJib2xkIDMycHggQXJpYWwiO2N0eC5maWxsVGV4dCgiQ2xlYW5lcnMiLDM2LDQ4KTtjdHguZm9udD0iMTZweCBB",
+    "cmlhbCI7Y3R4LmZpbGxTdHlsZT0iI2FlYjJjMCI7Y3R4LmZpbGxUZXh0KCIxMS1BQ0FEIEQtMUFNIMK3IDIwMjbigJMyMDI3Iiwz",
+    "Niw3OCk7Y3R4LmZpbGxUZXh0KHNlbGVjdGVkS2V5KCksMzYsMTAyKTt2YXIgeT0xMjA7cm93cy5mb3JFYWNoKGZ1bmN0aW9uKHIp",
+    "e2lmKHIuaGVhZGVyKXtjdHguZmlsbFN0eWxlPSIjMjQyOTM2IjtjdHguZmlsbFJlY3QoMjQseS0yMiw5NTIsMzEpO2N0eC5maWxs",
+    "U3R5bGU9IiNmZmYiO2N0eC5mb250PSJib2xkIDE4cHggQXJpYWwiO2N0eC5maWxsVGV4dChyLmRheSw0MCx5KTt5Kz0zODt9ZWxz",
+    "ZXtjdHguZmlsbFN0eWxlPSIjZTllYmYyIjtjdHguZm9udD0iMTZweCBBcmlhbCI7Y3R4LmZpbGxUZXh0KHIubmFtZSw1MCx5KTtj",
+    "dHguZmlsbFN0eWxlPXIuc3RhdHVzPT09IlByZXNlbnQiPyIjMzRjNzU5IjoiIzhlOTNhMSI7Y3R4LmZpbGxUZXh0KHIuc3RhdHVz",
+    "LDcwMCx5KTt5Kz0zMTt9fSk7Y2FudmFzLnRvQmxvYihmdW5jdGlvbihibG9iKXtpZihibG9iKWRvd25sb2FkKCIxMS1BQ0FELUQx",
+    "LWNsZWFuZXJzLWF0dGVuZGFuY2UtIitzZWxlY3RlZEtleSgpKyIucG5nIixibG9iKTtlbHNlIHRvYXN0KCJJbWFnZSBleHBvcnQg",
+    "ZmFpbGVkIik7fSwiaW1hZ2UvcG5nIik7fQogIGFzeW5jIGZ1bmN0aW9uIHN5bmNUb1NoZWV0cygpewogICAgdmFyIGRheT1jdXJy",
+    "ZW50RGF5KCk7dmFyIHBheWxvYWQ9e3R5cGU6ImNsZWFuZXJzIix0cmFja2VyOiJjbGVhbmVycyIsY2xhc3NOYW1lOiIxMS1BQ0FE",
+    "IEQtMUFNIixkYXRlOnNlbGVjdGVkS2V5KCksZGF5czpkYXk/KHtbZGF5XTpkYXlEYXRhKGRheSl9KTp7fSxyb3N0ZXI6R1JPVVBT",
+    "LHVwZGF0ZWRBdDpuZXcgRGF0ZSgpLnRvSVNPU3RyaW5nKCl9OwogICAgdHJ5e3ZhciByZXNwb25zZT1hd2FpdCBmZXRjaChTWU5D",
+    "X1VSTCx7bWV0aG9kOiJQT1NUIixoZWFkZXJzOnsiQ29udGVudC1UeXBlIjoidGV4dC9wbGFpbjtjaGFyc2V0PXV0Zi04In0sYm9k",
+    "eTpKU09OLnN0cmluZ2lmeShwYXlsb2FkKX0pO3ZhciByZXN1bHQ9YXdhaXQgcmVzcG9uc2UuanNvbigpO2lmKHJlc3VsdCYmcmVz",
+    "dWx0Lm9rKXRvYXN0KCJDbGVhbmVyIGF0dGVuZGFuY2Ugc2F2ZWQgdG8gR29vZ2xlIFNoZWV0cyIpO2Vsc2UgdG9hc3QoKHJlc3Vs",
+    "dCYmcmVzdWx0LmVycm9yKXx8Ikdvb2dsZSBTaGVldHMgcmVqZWN0ZWQgdGhlIGNsZWFuZXIgZGF0YSIpO31jYXRjaChlKXt0b2Fz",
+    "dCgiQ291bGQgbm90IHNhdmUuIENoZWNrIHRoZSBkZXBsb3llZCBHb29nbGUgQXBwcyBTY3JpcHQgVVJMIGFuZCBwZXJtaXNzaW9u",
+    "cy4iKTt9CiAgfQogIGFzeW5jIGZ1bmN0aW9uIHN5bmNGcm9tU2hlZXRzKCl7CiAgICB2YXIgYnV0dG9uPSQoInB1bGwiKSxwcmV2",
+    "aW91c0xhYmVsPWJ1dHRvbj9idXR0b24udGV4dENvbnRlbnQ6IlN5bmMgZnJvbSBHb29nbGUgU2hlZXRzIjsKICAgIGlmKGJ1dHRv",
+    "bil7YnV0dG9uLnRleHRDb250ZW50PSJTeW5jaW5nLi4uIjtidXR0b24uZGlzYWJsZWQ9dHJ1ZTtidXR0b24uc2V0QXR0cmlidXRl",
+    "KCJhcmlhLWJ1c3kiLCJ0cnVlIik7fQogICAgdHJ5e3ZhciB1cmw9U1lOQ19VUkwrKFNZTkNfVVJMLmluZGV4T2YoIj8iKT49MD8i",
+    "JiI6Ij8iKSsidHlwZT1jbGVhbmVycyZ0cmFja2VyPWNsZWFuZXJzJmRhdGU9IitlbmNvZGVVUklDb21wb25lbnQoc2VsZWN0ZWRL",
+    "ZXkoKSk7dmFyIHJlc3BvbnNlPWF3YWl0IGZldGNoKHVybCx7Y2FjaGU6Im5vLXN0b3JlIn0pO3ZhciByZXN1bHQ9YXdhaXQgcmVz",
+    "cG9uc2UuanNvbigpO2lmKHJlc3VsdCYmcmVzdWx0Lm9rJiZyZXN1bHQuZGF5cyl7ZGF0YVtzZWxlY3RlZEtleSgpXT1yZXN1bHQu",
+    "ZGF5cztzYXZlQ291bnRzT25seSgpO3JlbmRlcigpO3RvYXN0KCJTeW5jZWQgY2xlYW5lciBhdHRlbmRhbmNlIGZyb20gR29vZ2xl",
+    "IFNoZWV0cyIpO31lbHNlIHRvYXN0KChyZXN1bHQmJnJlc3VsdC5lcnJvcil8fCJHb29nbGUgU2hlZXRzIHJlYWQgZmFpbGVkIik7",
+    "fWNhdGNoKGUpe3RvYXN0KCJDb3VsZCBub3QgbG9hZCBhdHRlbmRhbmNlLiBDaGVjayB0aGUgZGVwbG95ZWQgR29vZ2xlIEFwcHMg",
+    "U2NyaXB0IFVSTCBhbmQgcGVybWlzc2lvbnMuIik7fQogICAgZmluYWxseXtpZihidXR0b24pe2J1dHRvbi50ZXh0Q29udGVudD0i",
+    "U3luYyBmcm9tIEdvb2dsZSBTaGVldHMiO2J1dHRvbi5yZW1vdmVBdHRyaWJ1dGUoImFyaWEtYnVzeSIpO3VwZGF0ZUxvY2tVSSgp",
+    "O319CiAgfQogICQoInN5bmMiKS5hZGRFdmVudExpc3RlbmVyKCJjbGljayIsc3luY1RvU2hlZXRzKTskKCJwdWxsIikuYWRkRXZl",
+    "bnRMaXN0ZW5lcigiY2xpY2siLHN5bmNGcm9tU2hlZXRzKTskKCJleHBvcnQiKS5hZGRFdmVudExpc3RlbmVyKCJjbGljayIsZXhw",
+    "b3J0RmlsZSk7JCgiZXhwb3J0SW1nIikuYWRkRXZlbnRMaXN0ZW5lcigiY2xpY2siLGV4cG9ydEltYWdlKTsKICB2YXIgc2VhcmNo",
+    "PSQoInEiKTtpZihzZWFyY2gpc2VhcmNoLmFkZEV2ZW50TGlzdGVuZXIoImlucHV0IixmdW5jdGlvbigpe3ZhciB0ZXJtPXNlYXJj",
+    "aC52YWx1ZS50cmltKCkudG9VcHBlckNhc2UoKTtkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCIuY2xlYW5lci1yb3ciKS5mb3JF",
+    "YWNoKGZ1bmN0aW9uKHJvdyl7cm93LnN0eWxlLmRpc3BsYXk9cm93LnF1ZXJ5U2VsZWN0b3IoIi5jbGVhbmVyLW5hbWUiKS50ZXh0",
+    "Q29udGVudC5pbmRleE9mKHRlcm0pPj0wPyIiOiJub25lIjt9KTt9KTsKICB2YXIgZGF0ZUlucHV0PSQoImF0dGVuZGFuY2VEYXRl",
+    "Iik7aWYoZGF0ZUlucHV0KXtzZXRTZWxlY3RlZERhdGUoc2VsZWN0ZWREYXRlKTtkYXRlSW5wdXQuYWRkRXZlbnRMaXN0ZW5lcigi",
+    "Y2hhbmdlIixmdW5jdGlvbigpe3NldFNlbGVjdGVkRGF0ZShkYXRlSW5wdXQudmFsdWUpO30pO30KICAkKCJ0b2RheSIpLmFkZEV2",
+    "ZW50TGlzdGVuZXIoImNsaWNrIixmdW5jdGlvbigpe3NldFNlbGVjdGVkRGF0ZShuZXcgRGF0ZSgpKTt9KTsKICAkKCJkYXlMb2Nr",
+    "IikuYWRkRXZlbnRMaXN0ZW5lcigiY2xpY2siLGZ1bmN0aW9uKCl7dmFyIGtleT1zZWxlY3RlZEtleSgpO2lmKGlzV2Vla2VuZChr",
+    "ZXkpKXt0b2FzdCgiU2F0dXJkYXkgYW5kIFN1bmRheSBhcmUgcGVybWFuZW50bHkgbG9ja2VkIik7dXBkYXRlTG9ja1VJKCk7cmV0",
+    "dXJuO312YXIgd2FzTG9ja2VkPWlzTG9ja2VkKCk7ZGF5TG9ja3Nba2V5XT0hd2FzTG9ja2VkO2lmKGtleT49ZGF0ZUtleShuZXcg",
+    "RGF0ZSgpKSlzYXZlTG9ja3MoKTtyZW5kZXIoKTt0b2FzdCh3YXNMb2NrZWQ/IkRheSBtYW51YWxseSB1bmxvY2tlZCI6IkRheSBt",
+    "YW51YWxseSBsb2NrZWQiKTt9KTsKICB2YXIgbGFzdExvY2tTdGF0ZT1pc0xvY2tlZCgpO3dpbmRvdy5zZXRJbnRlcnZhbChmdW5j",
+    "dGlvbigpe3ZhciBuZXh0PWlzTG9ja2VkKCk7aWYobmV4dCE9PWxhc3RMb2NrU3RhdGUpe2xhc3RMb2NrU3RhdGU9bmV4dDtyZW5k",
+    "ZXIoKTt9ZWxzZSB1cGRhdGVMb2NrVUkoKTt9LDE1MDAwKTsKICByZW5kZXIoKTsKICBzeW5jRnJvbVNoZWV0cygpOwp9KSgpOw=="
+  
+  ]
+  var form = document.getElementById("gate-form");
+  var field = document.getElementById("gate-password");
+  var remember = document.getElementById("gate-remember");
+  var rememberKey = "attendanceEditorRememberMe";
+  try { remember.checked = localStorage.getItem(rememberKey) === "1"; } catch (_) {}
+  form.addEventListener("submit", async function(event){
+    event.preventDefault();
+    var error = document.getElementById("gate-error");
+    var submitButton = document.getElementById("gate-submit");
+    error.textContent = "";
+    submitButton.classList.remove("is-error");
+    submitButton.style.background = "var(--blue)";
+    var gateElement = document.getElementById("password-gate");
+    window.clearTimeout(gateElement.errorResetTimer);
+    gateElement.classList.remove("has-error");
+    try {
+      var bytes = new TextEncoder().encode(field.value);
+      var hash = await crypto.subtle.digest("SHA-256", bytes);
+      var actual = Array.from(new Uint8Array(hash), function(b){return b.toString(16).padStart(2,"0");}).join("");
+      var rememberedLogin = false;
+      try { rememberedLogin = localStorage.getItem(rememberKey) === "1"; } catch (_) {}
+      if (actual !== expected && !(rememberedLogin && remember.checked)) {
+        error.textContent = "Incorrect password. Try again.";
+        gateElement.classList.add("has-error");
+        gateElement.errorResetTimer = window.setTimeout(function(){ gateElement.classList.remove("has-error"); }, 3000);
+        submitButton.classList.remove("is-error");
+        void submitButton.offsetWidth;
+        submitButton.classList.add("is-error");
+        if (navigator.vibrate) navigator.vibrate([35, 25, 35]);
+        field.select();
+        return;
+      }
+      try {
+        if (remember.checked) localStorage.setItem(rememberKey, "1");
+        else localStorage.removeItem(rememberKey);
+      } catch (_) {}
+      var gate = document.getElementById("password-gate");
+      var app = document.getElementById("protected-app");
+      app.style.display = "block";
+      app.style.opacity = "0";
+      app.style.transform = "translateY(5px)";
+      app.style.transition = "opacity .38s ease, transform .38s ease";
+      gate.classList.add("is-unlocking");
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          app.style.opacity = "1";
+          app.style.transform = "translateY(0)";
+        });
+      });
+      window.setTimeout(function(){ gate.remove(); }, 410);
+      var decoded = atob(encodedParts.join(""));
+      var binary = Uint8Array.from(decoded, function(c){return c.charCodeAt(0);});
+      var source = new TextDecoder().decode(binary);
+      var script = document.createElement("script");
+      script.textContent = source;
+      document.body.appendChild(script);
+    } catch (e) {
+      error.textContent = "Unable to unlock in this browser. Please use HTTPS.";
+    }
+  });
+  if (remember.checked) {
+    field.required = false;
+    form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+  }
+})();
+</script>
+
+<!-- Basic UI copy/context-menu deterrents. These are not a substitute for server-side security. -->
+<style>
+  /* Prevent casual selection of page text while keeping form controls usable. */
+  body, body * {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none;
+  }
+  input, textarea, select, [contenteditable="true"],
+  input *, textarea *, select * {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default;
+  }
+  img, svg { -webkit-user-drag: none; user-drag: none; }
+</style>
+<script>
+(function(){var s=atob("CihmdW5jdGlvbiAoKSB7CiAgInVzZSBzdHJpY3QiOwoKICBmdW5jdGlvbiBpc0VkaXRhYmxlKHRhcmdldCkgewogICAgcmV0dXJuICEhKHRhcmdldCAmJiB0YXJnZXQuY2xvc2VzdCAmJiB0YXJnZXQuY2xvc2VzdCgKICAgICAgJ2lucHV0LCB0ZXh0YXJlYSwgc2VsZWN0LCBbY29udGVudGVkaXRhYmxlPSJ0cnVlIl0sIFtyb2xlPSJ0ZXh0Ym94Il0nCiAgICApKTsKICB9CgogIC8vIERpc2FibGUgcmlnaHQtY2xpY2sgYW5kIGxvbmctcHJlc3MgY29udGV4dCBtZW51cyBhY3Jvc3MgdGhlIHBhZ2UuCiAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigiY29udGV4dG1lbnUiLCBmdW5jdGlvbiAoZXZlbnQpIHsKICAgIGV2ZW50LnByZXZlbnREZWZhdWx0KCk7CiAgfSwgeyBjYXB0dXJlOiB0cnVlIH0pOwoKICAvLyBTdG9wIGNvcHlpbmcvY3V0dGluZyBwYWdlIHRleHQuIElucHV0cyByZW1haW4gdXNhYmxlIGZvciBub3JtYWwgZWRpdGluZy4KICBbImNvcHkiLCAiY3V0Il0uZm9yRWFjaChmdW5jdGlvbiAodHlwZSkgewogICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcih0eXBlLCBmdW5jdGlvbiAoZXZlbnQpIHsKICAgICAgaWYgKCFpc0VkaXRhYmxlKGV2ZW50LnRhcmdldCkpIGV2ZW50LnByZXZlbnREZWZhdWx0KCk7CiAgICB9LCB7IGNhcHR1cmU6IHRydWUgfSk7CiAgfSk7CgogIC8vIFByZXZlbnQgZHJhZ2dpbmcgdGV4dC9pbWFnZXMgb3V0IG9mIHRoZSBwYWdlLgogIGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoImRyYWdzdGFydCIsIGZ1bmN0aW9uIChldmVudCkgewogICAgaWYgKCFpc0VkaXRhYmxlKGV2ZW50LnRhcmdldCkpIGV2ZW50LnByZXZlbnREZWZhdWx0KCk7CiAgfSwgeyBjYXB0dXJlOiB0cnVlIH0pOwoKICAvLyBEZXRlciBjb21tb24gYnJvd3NlciBzaG9ydGN1dHMgdGhhdCBleHBvc2Uvc2F2ZS9wcmludCBwYWdlIGNvbnRlbnQuCiAgLy8gUGFzdGUgaXMgaW50ZW50aW9uYWxseSBub3QgYmxvY2tlZCBpbiBmb3JtIGNvbnRyb2xzIChlLmcuIHBhc3N3b3JkL3NlYXJjaCBmaWVsZHMpLgogIGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoImtleWRvd24iLCBmdW5jdGlvbiAoZXZlbnQpIHsKICAgIGlmIChpc0VkaXRhYmxlKGV2ZW50LnRhcmdldCkpIHJldHVybjsKICAgIHZhciBrZXkgPSAoZXZlbnQua2V5IHx8ICIiKS50b0xvd2VyQ2FzZSgpOwogICAgdmFyIG1vZCA9IGV2ZW50LmN0cmxLZXkgfHwgZXZlbnQubWV0YUtleTsKICAgIGlmIChtb2QgJiYgKGtleSA9PT0gImMiIHx8IGtleSA9PT0gIngiIHx8IGtleSA9PT0gInUiIHx8IGtleSA9PT0gInMiIHx8IGtleSA9PT0gInAiKSkgewogICAgICBldmVudC5wcmV2ZW50RGVmYXVsdCgpOwogICAgICBldmVudC5zdG9wUHJvcGFnYXRpb24oKTsKICAgIH0KICAgIGlmIChldmVudC5rZXkgPT09ICJGMTIiIHx8IChtb2QgJiYgZXZlbnQuc2hpZnRLZXkgJiYgWyJpIiwgImoiLCAiYyJdLmluZGV4T2Yoa2V5KSAhPT0gLTEpKSB7CiAgICAgIGV2ZW50LnByZXZlbnREZWZhdWx0KCk7CiAgICAgIGV2ZW50LnN0b3BQcm9wYWdhdGlvbigpOwogICAgfQogIH0sIHsgY2FwdHVyZTogdHJ1ZSB9KTsKfSkoKTsK");(new Function(s))();})();
+</script>
+
+
+<script>
+(function(){
+  var sync=document.getElementById('sync');
+  if(sync){
+    var busy=false, resetTimer;
+    sync.addEventListener('click',function(){
+      if(busy)return; busy=true;
+      var original='Save to Google Sheets'; sync.textContent='Saving...';
+      clearTimeout(resetTimer);
+      resetTimer=setTimeout(function(){sync.textContent=original;busy=false;},12000);
+      // Restore as soon as the Apps Script request settles, if it is made through fetch.
+      var started=Date.now();
+      var watch=setInterval(function(){
+        if(Date.now()-started>=12000){clearInterval(watch);sync.textContent=original;busy=false;}
+      },500);
+    },true);
+  }
+  var unmarked=document.getElementById('allUnmarked');
+  if(unmarked){unmarked.addEventListener('click',function(){
+    document.querySelectorAll('#cleanerDays .cleaner-check').forEach(function(box){
+      if(box.disabled)return;
+      if(box.checked){box.checked=false;box.dispatchEvent(new Event('change',{bubbles:true}));}
+    });
+    var toast=document.getElementById('toast');
+    if(toast){toast.textContent='Everyone set to unmarked';toast.classList.add('show');clearTimeout(window.__cleanersToastTimer);window.__cleanersToastTimer=setTimeout(function(){toast.classList.remove('show');},2600);}
+  });}
+})();
+</script>
+
+</body>
+</html>
+
+<style>
+/* Date picker now has only the date and Today control, with balanced spacing. */
+.date-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 12px}
+.date-row .mid{flex:1;min-width:0;max-width:260px}
+.date-row input{width:100%;box-sizing:border-box}
+.desktop-right .date-row{justify-content:center;gap:10px;padding:10px 12px}
+.desktop-right .date-row .mid{flex:1;max-width:none}
+.desktop-right .today{flex:none}
+.cleaner-check:disabled{opacity:.45;cursor:not-allowed}
+.readonly-note[hidden]{display:none!important}
+@media(max-width:899px){.date-row{gap:10px!important;padding:8px 10px!important}.date-row .mid{max-width:none}.desktop-right .date-row{gap:10px!important}}
+</style>
+
+<style>
+/* Match the action list from the main attendance website: one grouped panel, full-width rows, separators. */
+.cleaners-actions{display:block!important;padding:0!important;gap:0!important;overflow:hidden;border-radius:20px!important;width:100%;box-sizing:border-box}
+.cleaners-actions .action{appearance:none;-webkit-appearance:none;display:block!important;position:relative;width:100%!important;min-width:0;min-height:38px!important;height:auto;padding:9px 16px!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;text-align:left!important;font-family:inherit;font-size:15px!important;font-weight:500;line-height:19px!important;letter-spacing:0;color:var(--blue,#0a84ff)!important;overflow:visible!important}
+.cleaners-actions .action+.action::before{content:"";position:absolute;display:block;top:0;left:0!important;right:0;height:1px;background:var(--sep,rgba(255,255,255,.13));}
+.cleaners-actions .action:active{background:var(--fill,rgba(255,255,255,.08))!important}
+.cleaners-actions .action.danger{color:var(--red,#ff453a)!important}
+.cleaners-actions .action:disabled{opacity:.55}
+.desktop-actions-head{margin:14px 4px 7px!important}
+@media(max-width:899px){.cleaners-actions{margin-top:0!important}.cleaners-actions .action{min-height:38px!important;padding:9px 16px!important;font-size:15px!important}.desktop-actions-head{margin:8px 4px 7px!important}}
+@media(min-width:900px){.desktop-right .cleaners-actions{display:block!important;grid-template-columns:none!important}.desktop-right .cleaners-actions .action{width:100%!important}}
+</style>
+<script>
+(function(){var s=atob("Ci8qIEtlZXAgdGhlIGV4dHJhIHJlZmVyZW5jZS1zdHlsZSBhY3Rpb25zIGZ1bmN0aW9uYWwgd2l0aG91dCBjaGFuZ2luZyB0aGUgdHJhY2tlciBzdG9yYWdlIGxvZ2ljLiAqLwooZnVuY3Rpb24oKXsKICBmdW5jdGlvbiBzZXRWaXNpYmxlQ2hlY2tib3hlcyhjaGVja2VkLCBtZXNzYWdlKXsKICAgIHZhciBib3hlcz1kb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCcjY2xlYW5lckRheXMgLmNsZWFuZXItY2hlY2snKTsKICAgIHZhciBjaGFuZ2VkPTA7CiAgICBib3hlcy5mb3JFYWNoKGZ1bmN0aW9uKGJveCl7CiAgICAgIGlmKGJveC5kaXNhYmxlZCkgcmV0dXJuOwogICAgICBpZihib3guY2hlY2tlZCE9PWNoZWNrZWQpe2JveC5jaGVja2VkPWNoZWNrZWQ7Ym94LmRpc3BhdGNoRXZlbnQobmV3IEV2ZW50KCdjaGFuZ2UnLHtidWJibGVzOnRydWV9KSk7Y2hhbmdlZCsrO30KICAgIH0pOwogICAgdmFyIHRvYXN0PWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCd0b2FzdCcpOwogICAgaWYodG9hc3Qpe3RvYXN0LnRleHRDb250ZW50PWNoYW5nZWQ/bWVzc2FnZTonTm8gY2hhbmdlcyBtYWRlJzt0b2FzdC5jbGFzc0xpc3QuYWRkKCdzaG93Jyk7Y2xlYXJUaW1lb3V0KHdpbmRvdy5fX2NsZWFuZXJzVG9hc3RUaW1lcik7d2luZG93Ll9fY2xlYW5lcnNUb2FzdFRpbWVyPXNldFRpbWVvdXQoZnVuY3Rpb24oKXt0b2FzdC5jbGFzc0xpc3QucmVtb3ZlKCdzaG93Jyl9LDI2MDApO30KICB9CiAgdmFyIGFsbD1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYWxsUHJlc2VudCcpOyBpZihhbGwpYWxsLmFkZEV2ZW50TGlzdGVuZXIoJ2NsaWNrJyxmdW5jdGlvbigpe3NldFZpc2libGVDaGVja2JveGVzKHRydWUsJ0V2ZXJ5b25lIG1hcmtlZCBwcmVzZW50Jyk7fSk7CiAgdmFyIGNsZWFyPWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdjbGVhckRheScpOyBpZihjbGVhciljbGVhci5hZGRFdmVudExpc3RlbmVyKCdjbGljaycsZnVuY3Rpb24oKXtpZih3aW5kb3cuY29uZmlybSgnQ2xlYXIgYXR0ZW5kYW5jZSBmb3IgdGhpcyBkYXk/Jykpc2V0VmlzaWJsZUNoZWNrYm94ZXMoZmFsc2UsJ0F0dGVuZGFuY2UgY2xlYXJlZCBmb3IgdGhpcyBkYXknKTt9KTsKfSkoKTsK");(new Function(s))();})();
+</script>
+<style id="exact-attendance-action-ui">
+/* Match the action panel and buttons from attendance-edit.html exactly. */
+.cleaners-main .actions-panel.cleaners-actions{
+  display:block!important;
+  width:100%!important;
+  padding:0!important;
+  margin:0!important;
+  gap:0!important;
+  overflow:hidden!important;
+  border-radius:20px!important;
+}
+.cleaners-main .actions-panel.cleaners-actions .action,
+.cleaners-main .actions-panel.cleaners-actions button.action{
+  display:block!important;
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:44px!important;
+  height:auto!important;
+  margin:0!important;
+  padding:11px 16px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--blue)!important;
+  font:inherit!important;
+  font-size:17px!important;
+  font-weight:400!important;
+  line-height:1.3!important;
+  text-align:left!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  justify-content:flex-start!important;
+  align-items:center!important;
+  cursor:pointer!important;
+}
+.cleaners-main .actions-panel.cleaners-actions .action+.action::before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  top:0!important;
+  left:16px!important;
+  right:0!important;
+  height:.5px!important;
+  background:var(--sep)!important;
+}
+.cleaners-main .actions-panel.cleaners-actions .action:active{background:var(--fill)!important}
+.cleaners-main .actions-panel.cleaners-actions .action.danger{color:var(--red)!important}
+@media(min-width:900px){
+ .cleaners-main .desktop-right .actions-panel.cleaners-actions .action{min-height:42px!important;padding:10px 14px!important;font-size:15px!important}
+ .cleaners-main .desktop-right .actions-panel.cleaners-actions .action+.action::before{left:14px!important}
+}
+@media(max-width:899px){
+ .cleaners-main .actions-panel.cleaners-actions .action{min-height:44px!important;padding:11px 16px!important;font-size:17px!important}
+ .cleaners-main .actions-panel.cleaners-actions .action+.action::before{left:16px!important}
+}
+</style>
+<style id="attendance-reference-alignment">
+/* Align the Cleaners page shell and columns with attendance-edit.html. */
+main.wrap.cleaners-main{
+  width:100%!important;max-width:1600px!important;margin:0 auto!important;
+  padding:18px 28px 48px!important;box-sizing:border-box!important;
+}
+.cleaners-main .desktop-columns{
+  display:grid!important;grid-template-columns:minmax(0,1fr) minmax(300px,350px)!important;
+  gap:20px!important;align-items:start!important;
+}
+.cleaners-main .desktop-left,.cleaners-main .desktop-right{min-width:0!important;max-width:100%!important}
+.cleaners-main .desktop-left{display:block!important}
+.cleaners-main .desktop-right{display:flex!important;flex-direction:column!important;gap:12px!important}
+.cleaners-main .desktop-left .head{margin:16px 4px 7px!important}
+.cleaners-main .desktop-right .head{margin:2px 4px 7px!important}
+.cleaners-main .desktop-date,.cleaners-main .desktop-stats,.cleaners-main .actions-panel{width:100%!important;min-width:0!important;margin:0!important}
+.cleaners-main .date-row{display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;padding:10px 12px!important;min-height:58px!important}
+.cleaners-main .date-row .mid{flex:1 1 auto!important;min-width:0!important;display:flex!important;justify-content:center!important}
+.cleaners-main .date-row input{width:100%!important;max-width:230px!important;min-width:0!important}
+.cleaners-main .desktop-right .cleaners-actions{display:block!important;grid-template-columns:none!important;gap:0!important;padding:0!important}
+.cleaners-main .desktop-right .cleaners-actions .action{width:100%!important;min-height:42px!important;padding:10px 14px!important;font-size:15px!important}
+.cleaners-main .desktop-right .cleaners-actions .action+.action::before{left:14px!important}
+@media(max-width:899px){
+  main.wrap.cleaners-main{width:100%!important;max-width:100%!important;margin:0 auto!important;padding:16px 16px 48px!important}
+  .cleaners-main .desktop-columns,.cleaners-main .desktop-left,.cleaners-main .desktop-right{display:contents!important}
+  .cleaners-main .desktop-date{order:1!important}
+  .cleaners-main .desktop-actions-head{order:2!important}
+  .cleaners-main .desktop-actions{order:3!important}
+  .cleaners-main .desktop-sync-foot{order:4!important}
+  .cleaners-main .desktop-stats{order:5!important}
+  .cleaners-main .cleaner-list-heading{order:6!important;margin:16px 4px 7px!important}
+  .cleaners-main #cleanerDays{order:7!important;margin-top:0!important;width:100%!important}
+  .cleaners-main .date-row{gap:8px!important;padding:8px 12px!important;min-height:58px!important}
+  .cleaners-main .date-row input{max-width:none!important;height:40px!important;font-size:16px!important}
+  .cleaners-main .date-row .today{min-height:40px!important;padding:8px 12px!important;white-space:nowrap!important}
+  .cleaners-main .desktop-right .cleaners-actions{display:block!important;padding:0!important}
+  .cleaners-main .desktop-right .cleaners-actions .action{min-height:44px!important;padding:11px 16px!important;font-size:17px!important}
+  .cleaners-main .desktop-right .cleaners-actions .action+.action::before{left:16px!important}
+  .cleaners-main .cleaner-list{padding:3px 14px 8px!important}
+  .cleaners-main .cleaner-row{padding:11px 4px!important;min-height:46px!important;gap:12px!important}
+}
+</style>
+
+<style id="cleaners-date-heading-fix">
+.cleaners-main .cleaner-list-heading{display:block!important;min-height:20px!important;line-height:1.5!important;padding:0!important;}
+.cleaners-main #activeDayLabel{display:block!important;margin:0!important;padding:0 4px!important;letter-spacing:.025em!important;word-spacing:.12em!important;line-height:1.5!important;}
+</style>
+<style id="compact-reference-spacing">
+/* Compact spacing to match the original attendance website. */
+.cleaners-main{padding-top:10px!important;padding-bottom:28px!important}
+.cleaners-main .desktop-columns{gap:16px!important;align-items:start!important}
+.cleaners-main .desktop-left .cleaner-list-heading{margin:3px 4px 5px!important;padding:0!important;min-height:18px!important;line-height:1.35!important}
+.cleaners-main #activeDayLabel{margin:0!important;padding:0 4px!important;line-height:1.35!important;letter-spacing:0!important;word-spacing:normal!important;font-size:13px!important}
+.cleaners-main #cleanerDays{margin-top:0!important}
+.cleaners-main .desktop-right .head{margin:8px 4px 5px!important;line-height:1.3!important}
+.cleaners-main .desktop-right .desktop-date{margin:0 0 8px!important}
+.cleaners-main .date-row{gap:6px!important;padding:6px 8px!important;min-height:0!important}
+.cleaners-main .date-row input{height:34px!important;max-width:190px!important;padding:5px 8px!important;font-size:14px!important;border-radius:9px!important}
+.cleaners-main .date-row .today{min-height:34px!important;height:34px!important;padding:6px 10px!important;font-size:14px!important;border-radius:9px!important}
+.cleaners-main .desktop-stats{margin:0!important}
+.cleaners-main .desktop-right .cleaners-actions .action{min-height:36px!important;padding:8px 13px!important;font-size:14px!important;line-height:18px!important}
+.cleaners-main .desktop-right .cleaners-actions .action+.action::before{left:13px!important}
+.cleaners-main .desktop-actions-head{margin:10px 4px 5px!important}
+.cleaners-main .cleaner-row{padding:9px 4px!important;min-height:42px!important;gap:10px!important}
+@media(max-width:899px){
+ .cleaners-main{padding:10px 12px 28px!important}
+ .cleaners-main .desktop-columns{gap:0!important}
+ .cleaners-main .desktop-left .cleaner-list-heading{margin:3px 4px 5px!important}
+ .cleaners-main #activeDayLabel{font-size:13px!important;line-height:1.35!important;letter-spacing:0!important;word-spacing:normal!important}
+ .cleaners-main #cleanerDays{margin-top:0!important}
+ .cleaners-main .desktop-date{margin-bottom:7px!important}
+ .cleaners-main .date-row{gap:6px!important;padding:6px 8px!important;min-height:0!important}
+ .cleaners-main .date-row input{height:34px!important;max-width:none!important;padding:5px 8px!important;font-size:14px!important}
+ .cleaners-main .date-row .today{height:34px!important;min-height:34px!important;padding:6px 10px!important;font-size:14px!important}
+ .cleaners-main .desktop-right .cleaners-actions .action{min-height:38px!important;padding:8px 13px!important;font-size:15px!important;line-height:19px!important}
+ .cleaners-main .desktop-right .cleaners-actions .action+.action::before{left:13px!important}
+ .cleaners-main .cleaner-row{padding:9px 4px!important;min-height:42px!important}
+}
+</style>
+
+<style id="date-controls-final-fix">
+/* Compact, evenly aligned date and Today controls, matching the reference attendance site. */
+.cleaners-main .date-panel{padding:0!important;border-radius:16px!important}
+.cleaners-main .date-row{display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;padding:7px 10px!important;min-height:0!important}
+.cleaners-main .date-row .mid{flex:1 1 0!important;min-width:0!important;display:flex!important;align-items:center!important;justify-content:stretch!important}
+.cleaners-main .date-row input{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;height:36px!important;min-height:36px!important;margin:0!important;padding:5px 8px!important;box-sizing:border-box!important;font-size:14px!important;line-height:1.2!important}
+.cleaners-main .date-row .today{flex:0 0 auto!important;height:36px!important;min-height:36px!important;padding:0 11px!important;margin:0!important;border-radius:10px!important;font-size:14px!important;line-height:1!important;white-space:nowrap!important;align-self:center!important}
+@media(max-width:899px){.cleaners-main .date-row{gap:6px!important;padding:7px 9px!important}.cleaners-main .date-row input{height:36px!important;min-height:36px!important;font-size:14px!important}.cleaners-main .date-row .today{height:36px!important;min-height:36px!important;padding:0 10px!important;font-size:14px!important}}
+@media(max-width:360px){.cleaners-main .date-row{gap:5px!important;padding:6px 7px!important}.cleaners-main .date-row .today{padding:0 8px!important}}
+</style>
+<style id="saving-state-match-syncing">
+/* Match the muted/darker appearance of the Syncing... button while a save is in progress. */
+#sync.is-saving{background:rgba(25,28,38,.58)!important;color:var(--blue,#0a84ff)!important;opacity:1!important;cursor:progress!important;box-shadow:none!important;}
+@media(prefers-color-scheme:light){#sync.is-saving{background:rgba(80,86,100,.18)!important;color:var(--blue,#0a84ff)!important;}}
+</style>
+<script>
+(function(){
+  var button=document.getElementById('sync');
+  if(!button)return;
+  var original='Save to Google Sheets';
+  var observer=new MutationObserver(function(){
+    if(button.textContent.trim()==='Saving...') button.classList.add('is-saving');
+    else button.classList.remove('is-saving');
+  });
+  observer.observe(button,{childList:true,characterData:true,subtree:true});
+  if(button.textContent.trim()==='Saving...')button.classList.add('is-saving');
+})();
+</script>
